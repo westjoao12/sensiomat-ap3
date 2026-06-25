@@ -2,22 +2,23 @@
   "name": "sensiomat-backend",
   "version": "1.0.0",
   "description": "SensioMat - IoT Materials Architecture Physics Engine",
-  "keywords": [
-    "sensor"
-  ],
-  "homepage": "https://github.com/westjoao12/sensiomat-ap3#readme",
-  "bugs": {
-    "url": "https://github.com/westjoao12/sensiomat-ap3/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/westjoao12/sensiomat-ap3.git"
-  },
-  "license": "ISC",
-  "author": "João Afonso Fukiau - West",
-  "type": "commonjs",
-  "main": "index.js",
+  "main": "src/server.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "keywords": [
+    "materials-science",
+    "iot",
+    "callister",
+    "simulation"
+  ],
+  "author": "João Afonso Fukiau",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
   }
 }
