@@ -1,0 +1,54 @@
+[
+  {
+    "id": "env_body_implant",
+    "name": "Biossensor Epidérmico / Implante",
+    "description": "Contato contínuo com tecido vivo, suor (NaCl) e temperatura corporal constante.",
+    "requirements": {
+      "requiresBiocompatibility": true,
+      "requiresFlexibility": true,
+      "minOxidationResistance": 8,
+      "maxOperatingTempC": 45,
+      "requiresOpticalTransparency": false,
+      "sensitiveToMagneticInterference": true
+    }
+  },
+  {
+    "id": "env_agri_soil",
+    "name": "Sensor Agrícola de Subsolo (IoT)",
+    "description": "Ambiente de alta umidade, acidez variável, presença de microrganismos e estresse mecânico por compactação.",
+    "requirements": {
+      "requiresBiocompatibility": false,
+      "requiresFlexibility": false,
+      "minOxidationResistance": 7,
+      "maxOperatingTempC": 60,
+      "requiresOpticalTransparency": false,
+      "sensitiveToMagneticInterference": false
+    }
+  },
+  {
+    "id": "env_industrial_hot",
+    "name": "Monitoramento de Turbina / Motor Industrial",
+    "description": "Exposição a temperaturas extremas e vibração mecânica de alta frequência.",
+    "requirements": {
+      "requiresBiocompatibility": false,
+      "requiresFlexibility": false,
+      "minOxidationResistance": 5,
+      "maxOperatingTempC": 250,
+      "requiresOpticalTransparency": false,
+      "sensitiveToMagneticInterference": true
+    }
+  },
+  {
+    "id": "env_optical_smart",
+    "name": "Lente de Contato Inteligente (Wearable Óptico)",
+    "description": "Necessita passagem absoluta de fótons de luz no espectro visível para a retina do utilizador.",
+    "requirements": {
+      "requiresBiocompatibility": true,
+      "requiresFlexibility": true,
+      "minOxidationResistance": 9,
+      "maxOperatingTempC": 40,
+      "requiresOpticalTransparency": true,
+      "sensitiveToMagneticInterference": false
+    }
+  }
+]
