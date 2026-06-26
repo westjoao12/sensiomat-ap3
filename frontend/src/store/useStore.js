@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import { fetchMaterials, simulateStack } from '../services/api.js';
 
 const useStore = create((set, get) => ({
+  theme: 'dark', // Novo estado global para o tema
   materials: [],
-  // CORREÇÃO: O estado inicial deve ser um ID real do environments.json
   environment: 'env_body_implant', 
   layers: {
     substrate: null,
@@ -13,6 +13,9 @@ const useStore = create((set, get) => ({
   simulationResult: null,
   isLoading: false,
   error: null,
+
+  // Ação para alternar o tema
+  toggleTheme: () => set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
 
   loadMaterials: async () => {
     try {
@@ -46,7 +49,6 @@ const useStore = create((set, get) => ({
       const result = await simulateStack(environment, layers);
       set({ simulationResult: result, isLoading: false });
     } catch (error) {
-      // Se o backend devolver 404 ou 500, capturamos a mensagem correta
       const errMsg = error.response?.data?.error || 'Erro interno ao processar heurística.';
       set({ error: errMsg, isLoading: false, simulationResult: null });
     }
