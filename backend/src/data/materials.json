@@ -1,0 +1,90 @@
+[
+  {
+    "id": "mat_cu_01",
+    "name": "Cobre Puro (Cu)",
+    "category": "Metal",
+    "mechanical": { "elasticModulusGPa": 110, "tensileStrengthMPa": 220, "isFlexible": true },
+    "electrical": { "conductivitySm": 5.85e7, "bandgapEV": 0, "isConductor": true },
+    "thermal": { "thermalConductivityWmK": 398, "maxOperatingTempC": 150 },
+    "magnetic": { "behavior": "Diamagnético", "causesInterference": false },
+    "optical": { "isTransparent": false },
+    "deteriorative": { "oxidationResistance": 4, "isBiocompatible": false }
+  },
+  {
+    "id": "mat_au_01",
+    "name": "Ouro (Au)",
+    "category": "Metal",
+    "mechanical": { "elasticModulusGPa": 79, "tensileStrengthMPa": 130, "isFlexible": true },
+    "electrical": { "conductivitySm": 4.42e7, "bandgapEV": 0, "isConductor": true },
+    "thermal": { "thermalConductivityWmK": 317, "maxOperatingTempC": 300 },
+    "magnetic": { "behavior": "Diamagnético", "causesInterference": false },
+    "optical": { "isTransparent": false },
+    "deteriorative": { "oxidationResistance": 10, "isBiocompatible": true }
+  },
+  {
+    "id": "mat_steel_01",
+    "name": "Aço Carbono AISI 1020",
+    "category": "Metal",
+    "mechanical": { "elasticModulusGPa": 205, "tensileStrengthMPa": 420, "isFlexible": false },
+    "electrical": { "conductivitySm": 5.88e6, "bandgapEV": 0, "isConductor": true },
+    "thermal": { "thermalConductivityWmK": 51.9, "maxOperatingTempC": 400 },
+    "magnetic": { "behavior": "Ferromagnético", "causesInterference": true },
+    "optical": { "isTransparent": false },
+    "deteriorative": { "oxidationResistance": 2, "isBiocompatible": false }
+  },
+  {
+    "id": "mat_alumina_01",
+    "name": "Óxido de Alumínio / Alumina (Al2O3)",
+    "category": "Cerâmica",
+    "mechanical": { "elasticModulusGPa": 380, "tensileStrengthMPa": 300, "isFlexible": false },
+    "electrical": { "conductivitySm": 1e-14, "bandgapEV": 9.0, "isConductor": false },
+    "thermal": { "thermalConductivityWmK": 30, "maxOperatingTempC": 1500 },
+    "magnetic": { "behavior": "Diamagnético", "causesInterference": false },
+    "optical": { "isTransparent": false },
+    "deteriorative": { "oxidationResistance": 10, "isBiocompatible": true }
+  },
+  {
+    "id": "mat_pdms_01",
+    "name": "PDMS (Silicone Industrial)",
+    "category": "Polímero",
+    "mechanical": { "elasticModulusGPa": 0.002, "tensileStrengthMPa": 6, "isFlexible": true },
+    "electrical": { "conductivitySm": 2.5e-14, "bandgapEV": 7.5, "isConductor": false },
+    "thermal": { "thermalConductivityWmK": 0.15, "maxOperatingTempC": 200 },
+    "magnetic": { "behavior": "Diamagnético", "causesInterference": false },
+    "optical": { "isTransparent": true },
+    "deteriorative": { "oxidationResistance": 9, "isBiocompatible": true }
+  },
+  {
+    "id": "mat_si_01",
+    "name": "Silício Monocristalino (Si)",
+    "category": "Semicondutor",
+    "mechanical": { "elasticModulusGPa": 130, "tensileStrengthMPa": 7000, "isFlexible": false },
+    "electrical": { "conductivitySm": 4.3e-4, "bandgapEV": 1.11, "isConductor": false },
+    "thermal": { "thermalConductivityWmK": 149, "maxOperatingTempC": 125 },
+    "magnetic": { "behavior": "Diamagnético", "causesInterference": false },
+    "optical": { "isTransparent": false },
+    "deteriorative": { "oxidationResistance": 8, "isBiocompatible": false }
+  },
+  {
+    "id": "mat_graphene_01",
+    "name": "Grafeno (Camada Monolítica)",
+    "category": "Material 2D",
+    "mechanical": { "elasticModulusGPa": 1000, "tensileStrengthMPa": 130000, "isFlexible": true },
+    "electrical": { "conductivitySm": 1.0e8, "bandgapEV": 0, "isConductor": true },
+    "thermal": { "thermalConductivityWmK": 4000, "maxOperatingTempC": 450 },
+    "magnetic": { "behavior": "Diamagnético", "causesInterference": false },
+    "optical": { "isTransparent": true },
+    "deteriorative": { "oxidationResistance": 9, "isBiocompatible": true }
+  },
+  {
+    "id": "mat_mos2_01",
+    "name": "Dissulfeto de Molibdênio (MoS2)",
+    "category": "Material 2D",
+    "mechanical": { "elasticModulusGPa": 270, "tensileStrengthMPa": 23000, "isFlexible": true },
+    "electrical": { "conductivitySm": 29.4, "bandgapEV": 1.8, "isConductor": false },
+    "thermal": { "thermalConductivityWmK": 34.5, "maxOperatingTempC": 350 },
+    "magnetic": { "behavior": "Diamagnético", "causesInterference": false },
+    "optical": { "isTransparent": true },
+    "deteriorative": { "oxidationResistance": 8, "isBiocompatible": false }
+  }
+]
