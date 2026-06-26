@@ -5,14 +5,15 @@ import { Layers, Thermometer, Cpu, Shield, Play } from 'lucide-react';
 export default function Sidebar() {
   const { materials, environment, layers, setEnvironment, setLayerMaterial, runSimulation, isLoading } = useStore();
 
+  // Mapeado diretamente do teu ficheiro environments.json para enviar o ID correto para a API
   const environments = [
-    'Wearable (Flexível)',
-    'Implante',
-    'Alta Temperatura',
-    'Humidade/Suor',
-    'Sensor Óptico',
-    'Indústria'
+    { id: 'env_body_implant', name: 'Biossensor Epidérmico / Implante' },
+    { id: 'env_agri_soil', name: 'Sensor Agrícola de Subsolo (IoT)' },
+    { id: 'env_industrial_hot', name: 'Monitoramento de Turbina / Industrial' },
+    { id: 'env_optical_smart', name: 'Lente de Contato Inteligente' }
   ];
+
+  const safeMaterials = Array.isArray(materials) ? materials : [];
 
   return (
     <div className="space-y-8 relative">
@@ -28,8 +29,9 @@ export default function Sidebar() {
           onChange={(e) => setEnvironment(e.target.value)}
           className="w-full bg-slate-800/50 border border-slate-700 rounded-md p-2.5 text-sm focus:ring-1 focus:ring-brandAccent focus:border-brandAccent outline-none transition-all"
         >
+          {/* Se nenhum ambiente estiver selecionado, usamos o primeiro da lista como padrão no valor */}
           {environments.map(env => (
-            <option key={env} value={env}>{env}</option>
+            <option key={env.id} value={env.id}>{env.name}</option>
           ))}
         </select>
       </div>
@@ -54,7 +56,7 @@ export default function Sidebar() {
             className="w-full bg-transparent border-b border-slate-700 p-1 text-sm outline-none focus:border-brandAccent text-white"
           >
             <option value="" disabled>Selecione um material...</option>
-            {materials.map(m => <option key={m.id} value={m.id}>{m.name} ({m.category})</option>)}
+            {safeMaterials.map(m => <option key={m.id} value={m.id}>{m.name} ({m.category})</option>)}
           </select>
         </div>
 
@@ -69,7 +71,7 @@ export default function Sidebar() {
             className="w-full bg-transparent border-b border-slate-700 p-1 text-sm outline-none focus:border-brandAccent text-white"
           >
             <option value="" disabled>Selecione um material...</option>
-            {materials.map(m => <option key={m.id} value={m.id}>{m.name} ({m.category})</option>)}
+            {safeMaterials.map(m => <option key={m.id} value={m.id}>{m.name} ({m.category})</option>)}
           </select>
         </div>
 
@@ -84,7 +86,7 @@ export default function Sidebar() {
             className="w-full bg-transparent border-b border-slate-700 p-1 text-sm outline-none focus:border-brandAccent text-white"
           >
             <option value="" disabled>Selecione um material...</option>
-            {materials.map(m => <option key={m.id} value={m.id}>{m.name} ({m.category})</option>)}
+            {safeMaterials.map(m => <option key={m.id} value={m.id}>{m.name} ({m.category})</option>)}
           </select>
         </div>
       </div>
