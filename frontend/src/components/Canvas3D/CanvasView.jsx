@@ -1,25 +1,48 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows, Sparkles } from '@react-three/drei';
+import useStore from '../../store/useStore';
 import SensorStack from './SensorStack';
 
 export default function CanvasView() {
+  // Vamos buscar o tema atual ao nosso gestor de estado (Zustand)
+  const theme = useStore((state) => state.theme);
+  const isDark = theme === 'dark';
+
   return (
-    // Transição suave no fundo do 3D entre o tema claro e escuro
-    <div className="w-full h-full bg-gradient-to-b from-slate-200 to-slate-400 dark:from-darkBg dark:to-slate-900 cursor-grab active:cursor-grabbing transition-colors duration-500">
+    <div className={`w-full h-full cursor-grab active:cursor-grabbing transition-colors duration-700 ${isDark ? 'bg-gradient-to-b from-darkBg to-slate-900' : 'bg-gradient-to-b from-slate-100 to-slate-300'}`}>
       <Canvas camera={{ position: [5, 4, 6], fov: 45 }}>
         
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
-        <pointLight position={[-10, -10, -5]} color="#38BDF8" intensity={2} />
+        {/* LUZES DINÂMICAS: No modo claro, precisamos de mais luz ambiente para os materiais não ficarem opacos */}
+        <ambientLight intensity={isDark ? 0.4 : 0.7} />
+        <directionalLight position={[10, 10, 5]} intensity={isDark ? 1 : 1.5} castShadow />
+        <pointLight position={[-10, -10, -5]} color="#38BDF8" intensity={isDark ? 2 : 1} />
         
-        <Environment preset="city" />
+        {/* AMBIENTE: 'city' dá bons reflexos escuros, 'studio' ilumina uniformemente materiais no modo claro */}
+        <Environment preset={isDark ? "city" : "studio"} />
 
         <Suspense fallback={null}>
           <SensorStack />
-          {/* As partículas mantêm a cor da marca (brandAccent) que funciona bem em ambos os temas */}
-          <Sparkles count={50} scale={10} size={2} speed={0.4} opacity={0.4} color="#38BDF8" />
-          <ContactShadows position={[0, -2.5, 0]} opacity={0.4} scale={10} blur={2} far={4} />
+          
+          {/* PARTÍCULAS DINÂMICAS: Ciano no escuro, Azul-Forte no claro */}
+          <Sparkles 
+            count={60} 
+            scale={10} 
+            size={isDark ? 2.5 : 3.5} 
+            speed={0.4} 
+            opacity={isDark ? 0.5 : 0.8} 
+            color={isDark ? "#38BDF8" : "#0284C7"} 
+          />
+          
+          {/* SOMBRAS: Mais intensas no modo claro para aterrar o modelo 3D no ecrã */}
+          <ContactShadows 
+            position={[0, -2.5, 0]} 
+            opacity={isDark ? 0.4 : 0.6} 
+            scale={10} 
+            blur={2.5} 
+            far={4} 
+            color={isDark ? "#000000" : "#334155"} 
+          />
         </Suspense>
 
         <OrbitControls 
