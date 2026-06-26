@@ -3,7 +3,8 @@ import { fetchMaterials, simulateStack } from '../services/api.js';
 
 const useStore = create((set, get) => ({
   materials: [],
-  environment: 'Wearable (Flexível)',
+  // CORREÇÃO: O estado inicial deve ser um ID real do environments.json
+  environment: 'env_body_implant', 
   layers: {
     substrate: null,
     circuit: null,
@@ -13,7 +14,6 @@ const useStore = create((set, get) => ({
   isLoading: false,
   error: null,
 
-  // Ação para carregar o catálogo do backend
   loadMaterials: async () => {
     try {
       const data = await fetchMaterials();
@@ -23,19 +23,16 @@ const useStore = create((set, get) => ({
     }
   },
 
-  // Ação para alterar o ambiente de teste
   setEnvironment: (env) => set({ environment: env, simulationResult: null }),
 
-  // Ação para atribuir um material a uma camada específica
   setLayerMaterial: (layerName, materialId) => set((state) => ({
     layers: {
       ...state.layers,
       [layerName]: materialId
     },
-    simulationResult: null // Reseta resultados anteriores ao modificar o design
+    simulationResult: null
   })),
 
-  // Ação para executar a simulação heurística
   runSimulation: async () => {
     const { environment, layers } = get();
     
@@ -49,8 +46,9 @@ const useStore = create((set, get) => ({
       const result = await simulateStack(environment, layers);
       set({ simulationResult: result, isLoading: false });
     } catch (error) {
+      // Se o backend devolver 404 ou 500, capturamos a mensagem correta
       const errMsg = error.response?.data?.error || 'Erro interno ao processar heurística.';
-      set({ error: errMsg, isLoading: false });
+      set({ error: errMsg, isLoading: false, simulationResult: null });
     }
   }
 }));

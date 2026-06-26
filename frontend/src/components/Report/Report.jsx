@@ -14,6 +14,9 @@ export default function Report() {
     );
   }
 
+  // Prevenção de segurança extra
+  const reportData = simulationResult?.report || { warnings: [], successes: [] };
+
   return (
     <div className="w-96 h-full bg-darkSurface border-l border-slate-800 flex flex-col shadow-2xl z-10 animate-in slide-in-from-right duration-300">
       
@@ -24,7 +27,6 @@ export default function Report() {
 
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
         
-        {/* Tratamento de Erro de Rede ou Lógica Interna */}
         {error && (
           <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 flex gap-3 items-start">
             <XCircle className="text-red-500 shrink-0 mt-0.5" size={18} />
@@ -32,7 +34,6 @@ export default function Report() {
           </div>
         )}
 
-        {/* Relatório de Sucesso / Falha */}
         {simulationResult && (
           <>
             <div className={`p-4 rounded-lg flex items-center gap-3 border ${simulationResult.isApproved ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
@@ -43,7 +44,7 @@ export default function Report() {
               )}
               <div>
                 <h3 className={`font-bold ${simulationResult.isApproved ? 'text-green-400' : 'text-red-400'}`}>
-                  {simulationResult.status}
+                  {simulationResult.status || (simulationResult.isApproved ? 'Aprovado' : 'Falha Crítica')}
                 </h3>
                 <p className="text-xs text-slate-300 opacity-80">
                   {simulationResult.isApproved 
@@ -53,11 +54,10 @@ export default function Report() {
               </div>
             </div>
 
-            {/* Lista de Alertas (Warnings) */}
-            {simulationResult.report.warnings.length > 0 && (
+            {reportData.warnings?.length > 0 && (
               <div className="space-y-3">
                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Falhas Críticas Detetadas</h4>
-                {simulationResult.report.warnings.map((warning, idx) => (
+                {reportData.warnings.map((warning, idx) => (
                   <div key={idx} className="bg-slate-800/50 rounded p-3 border-l-2 border-red-500">
                     <span className="text-[10px] font-bold text-red-400 uppercase">{warning.property} | Camada: {warning.layer}</span>
                     <p className="text-sm text-slate-300 mt-1">{warning.message}</p>
@@ -66,11 +66,10 @@ export default function Report() {
               </div>
             )}
 
-            {/* Lista de Sucessos (Successes) */}
-            {simulationResult.report.successes.length > 0 && (
+            {reportData.successes?.length > 0 && (
               <div className="space-y-3 mt-6">
                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Aprovações Parciais</h4>
-                {simulationResult.report.successes.map((success, idx) => (
+                {reportData.successes.map((success, idx) => (
                   <div key={idx} className="bg-slate-800/50 rounded p-3 border-l-2 border-green-500">
                     <span className="text-[10px] font-bold text-green-400 uppercase">{success.property} | Camada: {success.layer}</span>
                     <p className="text-sm text-slate-300 mt-1">{success.message}</p>
