@@ -1,6 +1,6 @@
 import React from 'react';
 import useStore from '../../store/useStore';
-import { AlertTriangle, CheckCircle, Info, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Info, XCircle, Activity } from 'lucide-react';
 
 export default function Report() {
   const { simulationResult, error } = useStore();
@@ -14,8 +14,11 @@ export default function Report() {
     );
   }
 
-  // Prevenção de segurança extra
-  const reportData = simulationResult?.report || { warnings: [], successes: [] };
+  // Mapeamento correto da nova estrutura do backend (SimulationEngine.js)
+  const isApproved = simulationResult?.globalStatus === "APPROVED";
+  const logs = simulationResult?.diagnosticLogs || [];
+  const warnings = logs.filter(log => log.status === "CRITICAL_FAIL");
+  const successes = logs.filter(log => log.status === "PASS");
 
   return (
     <div className="w-96 h-full bg-darkSurface border-l border-slate-800 flex flex-col shadow-2xl z-10 animate-in slide-in-from-right duration-300">
@@ -36,43 +39,59 @@ export default function Report() {
 
         {simulationResult && (
           <>
-            <div className={`p-4 rounded-lg flex items-center gap-3 border ${simulationResult.isApproved ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
-              {simulationResult.isApproved ? (
-                <CheckCircle className="text-green-500" size={24} />
-              ) : (
-                <AlertTriangle className="text-red-500 border-red-500/30" size={24} />
-              )}
-              <div>
-                <h3 className={`font-bold ${simulationResult.isApproved ? 'text-green-400' : 'text-red-400'}`}>
-                  {simulationResult.status || (simulationResult.isApproved ? 'Aprovado' : 'Falha Crítica')}
-                </h3>
-                <p className="text-xs text-slate-300 opacity-80">
-                  {simulationResult.isApproved 
-                    ? 'A pilha de materiais suporta o ambiente selecionado.'
-                    : 'Incompatibilidade crítica detetada nas propriedades.'}
-                </p>
+            <div className={`p-4 rounded-lg flex items-center justify-between border ${isApproved ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+              <div className="flex items-center gap-3">
+                {isApproved ? (
+                  <CheckCircle className="text-green-500" size={24} />
+                ) : (
+                  <AlertTriangle className="text-red-500" size={24} />
+                )}
+                <div>
+                  <h3 className={`font-bold ${isApproved ? 'text-green-400' : 'text-red-400'}`}>
+                    {isApproved ? 'Aprovado' : 'Falha Crítica'}
+                  </h3>
+                  <p className="text-xs text-slate-300 opacity-80">
+                    {isApproved 
+                      ? 'Pilha termodinamicamente estável.'
+                      : `${simulationResult.criticalFailuresDetected} falha(s) estrutural(is) detetada(s).`}
+                  </p>
+                </div>
+              </div>
+              
+              {/* Exibição da nova pontuação de viabilidade do backend */}
+              <div className="flex flex-col items-center justify-center bg-slate-900 rounded p-2 border border-slate-700">
+                 <Activity size={14} className="text-brandAccent mb-1" />
+                 <span className="text-xs font-bold text-white">{simulationResult.viabilityScorePercentage}%</span>
               </div>
             </div>
 
-            {reportData.warnings?.length > 0 && (
+            {warnings.length > 0 && (
               <div className="space-y-3">
                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Falhas Críticas Detetadas</h4>
-                {reportData.warnings.map((warning, idx) => (
+                {warnings.map((warning, idx) => (
                   <div key={idx} className="bg-slate-800/50 rounded p-3 border-l-2 border-red-500">
-                    <span className="text-[10px] font-bold text-red-400 uppercase">{warning.property} | Camada: {warning.layer}</span>
-                    <p className="text-sm text-slate-300 mt-1">{warning.message}</p>
+                    <div className="flex justify-between items-start mb-1">
+                       <span className="text-[10px] font-bold text-red-400 uppercase">{warning.property}</span>
+                       <span className="text-[10px] text-slate-400 bg-slate-900 px-1.5 py-0.5 rounded">{warning.layer}</span>
+                    </div>
+                    {/* Alterado para ler 'scientificReason' em vez de 'message' */}
+                    <p className="text-sm text-slate-300 mt-1">{warning.scientificReason}</p>
+                    <p className="text-[10px] text-slate-500 mt-2">Material testado: {warning.material}</p>
                   </div>
                 ))}
               </div>
             )}
 
-            {reportData.successes?.length > 0 && (
+            {successes.length > 0 && (
               <div className="space-y-3 mt-6">
                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Aprovações Parciais</h4>
-                {reportData.successes.map((success, idx) => (
+                {successes.map((success, idx) => (
                   <div key={idx} className="bg-slate-800/50 rounded p-3 border-l-2 border-green-500">
-                    <span className="text-[10px] font-bold text-green-400 uppercase">{success.property} | Camada: {success.layer}</span>
-                    <p className="text-sm text-slate-300 mt-1">{success.message}</p>
+                    <div className="flex justify-between items-start mb-1">
+                       <span className="text-[10px] font-bold text-green-400 uppercase">{success.property}</span>
+                       <span className="text-[10px] text-slate-400 bg-slate-900 px-1.5 py-0.5 rounded">{success.layer}</span>
+                    </div>
+                    <p className="text-sm text-slate-300 mt-1">{success.scientificReason}</p>
                   </div>
                 ))}
               </div>
