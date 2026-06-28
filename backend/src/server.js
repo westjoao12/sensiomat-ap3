@@ -6,7 +6,7 @@ import apiRoutes from './routes/apiRoutes.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3333;
+const PORT = process.env.PORT || 3001;
 
 // Middleware globais
 app.use(cors({ origin: '*' })); // Liberado para o frontend React local
