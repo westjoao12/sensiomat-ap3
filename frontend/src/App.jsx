@@ -60,8 +60,8 @@ export default function App() {
         </div>
       </div>
 
-      {/* CENTRO: Viewport 3D - Removido 'w-full' e adicionado 'min-w-0' para o Canvas encolher corretamente */}
-      <div className="flex-1 relative h-full min-w-0">
+      {/* CENTRO: Viewport 3D - Adicionado deslocamento à esquerda exclusivo para impressão */}
+      <div className="flex-1 relative h-full min-w-0 print:-translate-x-[180px]">
         
         <div className="absolute top-4 left-4 right-4 z-20 flex justify-between items-center pointer-events-none print:hidden">
           <button 
