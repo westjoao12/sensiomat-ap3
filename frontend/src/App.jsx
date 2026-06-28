@@ -112,9 +112,9 @@ export default function App() {
         </div>
       </div>
 
-      {/* PAINEL DIREITO: Atualizado para w-[340px] e shrink-0 */}
+      {/* PAINEL DIREITO: Atualizado para w-[400px] e adicionado overflow-x-hidden */}
       <div className={`
-        fixed inset-y-0 right-0 w-[340px] max-w-[calc(100vw-3rem)] shrink-0 h-full bg-white dark:bg-darkSurface shadow-2xl z-40 flex flex-col transition-transform duration-300 ease-in-out
+        fixed inset-y-0 right-0 w-[400px] max-w-[calc(100vw-3rem)] shrink-0 h-full bg-white dark:bg-darkSurface shadow-2xl z-40 flex flex-col transition-transform duration-300 ease-in-out
         md:static md:translate-x-0
         ${isReportOpen ? 'translate-x-0' : 'translate-x-full'}
       `}>
@@ -127,7 +127,8 @@ export default function App() {
           </button>
           <span className="font-bold text-slate-700 dark:text-slate-300">Resultados</span>
         </div>
-        <div className="flex-1 overflow-y-auto">
+        {/* Adicionado overflow-x-hidden para garantir que nunca aparece o scroll horizontal */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden">
           <Report />
         </div>
       </div>
