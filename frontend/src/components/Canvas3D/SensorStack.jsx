@@ -47,12 +47,14 @@ export default function SensorStack() {
   const getMaterialProps = (material) => {
     let baseColor = getMaterialColor(material?.id);
     
-    // VERIFICAÇÃO DE STATUS: Sobrepõe a cor se houver uma simulação concluída
-    if (simulationResult && simulationResult.status) {
-      if (simulationResult.status === 'Aprovado') {
-        baseColor = '#22c55e'; // Verde de sucesso
-      } else if (simulationResult.status === 'Falha Crítica' || simulationResult.status === 'Inviável') {
-        baseColor = '#ef4444'; // Vermelho de erro
+    // CORREÇÃO DEFINITIVA: Lemos 'globalStatus' exatamente como o backend (SimulationEngine) envia
+    const status = simulationResult?.globalStatus;
+
+    if (status) {
+      if (status === 'APPROVED') {
+        baseColor = '#22c55e'; // Verde para simulação APROVADA
+      } else if (status === 'REJECTED') {
+        baseColor = '#ef4444'; // Vermelho para simulação REJEITADA
       }
     }
 
