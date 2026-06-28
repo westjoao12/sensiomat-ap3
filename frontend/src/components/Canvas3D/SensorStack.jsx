@@ -1,89 +1,105 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { MathUtils } from 'three';
 import useStore from '../../store/useStore';
+import { Html } from '@react-three/drei'; // Trocámos o Text por Html para melhor legibilidade
 
 export default function SensorStack() {
-  const groupRef = useRef();
-  const { layers, simulationResult, materials } = useStore();
+  const { slots, materials } = useStore((state) => ({
+    slots: state.layers,
+    materials: state.materials
+  }));
+  
+  const [exploded, setExploded] = useState(false);
+  const topRef = useRef();
+  const midRef = useRef();
+  const baseRef = useRef();
 
-  useFrame((state, delta) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.2;
-    }
+  // Segurança para evitar erros se os materiais ainda estiverem a carregar da API
+  const findMaterial = (id) => {
+    if (!Array.isArray(materials) || !id) return null;
+    return materials.find(m => m.id === id);
+  };
+
+  const topoMat = findMaterial(slots.encapsulation);
+  const meioMat = findMaterial(slots.circuit);
+  const baseMat = findMaterial(slots.substrate);
+
+  // Como o JSON não tem cores, mapeamos os IDs para cores realistas aqui
+  const getMaterialColor = (id) => {
+    const colors = {
+      'mat_cu_01': '#ea580c', // Cobre / Laranja
+      'mat_au_01': '#facc15', // Ouro / Amarelo brilhante
+      'mat_steel_01': '#94a3b8', // Aço / Cinza
+      'mat_alumina_01': '#f8fafc', // Alumina / Branco cerâmico
+      'mat_pdms_01': '#67e8f9', // PDMS / Ciano translúcido
+      'mat_si_01': '#10b981', // Silício / Verde esmeralda
+      'mat_graphene_01': '#0f172a', // Grafeno / Escuro
+      'mat_mos2_01': '#a855f7' // MoS2 / Púrpura
+    };
+    return colors[id] || '#cbd5e1'; // Cor padrão (cinza) para materiais desconhecidos
+  };
+
+  const getMaterialProps = (material) => {
+    if (!material) return { color: '#e2e8f0', metalness: 0.1, roughness: 0.8, transparent: true, opacity: 0.3 };
+    
+    // Agora lemos os dados exatamente como estão no seu JSON
+    const isMetal = material.category === 'Metal';
+    const isTransparent = material.optical?.isTransparent === true;
+    
+    return {
+      color: getMaterialColor(material.id),
+      metalness: isMetal ? 1.0 : 0.1, // Metais com reflexo máximo no ambiente
+      roughness: isMetal ? 0.15 : (isTransparent ? 0.3 : 0.8), // Metais lisos, polímeros foscos
+      transparent: isTransparent,
+      opacity: isTransparent ? 0.6 : 1, // Lemos o optical.isTransparent do JSON
+      side: 2
+    };
+  };
+
+  useFrame(() => {
+    const topTargetY = exploded ? 1.5 : 0.6;
+    const midTargetY = 0;
+    const baseTargetY = exploded ? -1.5 : -0.6;
+
+    if (topRef.current) topRef.current.position.y = MathUtils.lerp(topRef.current.position.y, topTargetY, 0.1);
+    if (midRef.current) midRef.current.position.y = MathUtils.lerp(midRef.current.position.y, midTargetY, 0.1);
+    if (baseRef.current) baseRef.current.position.y = MathUtils.lerp(baseRef.current.position.y, baseTargetY, 0.1);
   });
 
-  const getMaterialAesthetics = (materialId, layerDefaultColor) => {
-    if (!materialId) return { color: layerDefaultColor, opacity: 0.1, transparent: true, roughness: 0.5, metalness: 0 };
-    
-    const mat = materials.find(m => m.id === materialId);
-    if (!mat) return { color: layerDefaultColor, opacity: 0.5, transparent: true, roughness: 0.5, metalness: 0 };
-
-    if (mat.id.includes('cu_')) return { color: '#b87333', opacity: 1, transparent: false, roughness: 0.2, metalness: 0.9 }; 
-    if (mat.id.includes('au_')) return { color: '#ffd700', opacity: 1, transparent: false, roughness: 0.1, metalness: 1.0 }; 
-    if (mat.id.includes('steel')) return { color: '#a0b0c0', opacity: 1, transparent: false, roughness: 0.3, metalness: 0.8 }; 
-    if (mat.id.includes('alumina')) return { color: '#fdfdfd', opacity: 1, transparent: false, roughness: 0.9, metalness: 0.0 }; 
-    if (mat.id.includes('pdms')) return { color: '#e0f7fa', opacity: 0.3, transparent: true, roughness: 0.0, metalness: 0.1, transmission: 0.9 }; 
-    if (mat.id.includes('si_')) return { color: '#2f4f4f', opacity: 1, transparent: false, roughness: 0.2, metalness: 0.6 }; 
-    if (mat.id.includes('graphene')) return { color: '#1a1a1a', opacity: 0.85, transparent: true, roughness: 0.2, metalness: 0.9 }; 
-    if (mat.id.includes('mos2')) return { color: '#4b0082', opacity: 1, transparent: false, roughness: 0.4, metalness: 0.5 }; 
-
-    return { color: layerDefaultColor, opacity: 1, transparent: false, roughness: 0.5, metalness: 0.2 };
-  };
-
-  const getLayerProps = (layerName, defaultColor) => {
-    const materialId = layers[layerName];
-    let props = getMaterialAesthetics(materialId, defaultColor);
-
-    if (simulationResult) {
-      // Mapeamento correto para os logs do SimulationEngine.js
-      const logs = simulationResult?.diagnosticLogs || [];
-      const warnings = logs.filter(log => log.status === "CRITICAL_FAIL");
-      const successes = logs.filter(log => log.status === "PASS");
-      const isApproved = simulationResult?.globalStatus === "APPROVED";
-
-      // Tradução dos nomes das camadas do frontend para o backend para fazer o match das cores
-      const layerNamesMap = {
-        'substrate': 'Substrato',
-        'circuit': 'Circuito / Trilhas',
-        'encapsulation': 'Encapsulamento'
-      };
-      
-      const backendLayerName = layerNamesMap[layerName];
-
-      // Verifica se há erros nesta camada ou erros globais/múltiplos
-      const hasError = warnings.some(w => w.layer.includes(backendLayerName) || w.layer.includes("Múltiplos") || w.layer.includes("Sistema Global") || w.layer.includes("Camadas Externas"));
-      
-      if (hasError) {
-        return { ...props, color: '#ef4444', emissive: '#ef4444', emissiveIntensity: 0.5, opacity: 0.9, transparent: true }; 
-      }
-      
-      const isSuccess = successes.some(s => s.layer.includes(backendLayerName) || s.layer.includes("Sistema Global"));
-      if (isApproved && isSuccess) {
-        return { ...props, color: '#22c55e', emissive: '#22c55e', emissiveIntensity: 0.2, opacity: 0.9, transparent: true }; 
-      }
-    }
-
-    return props;
-  };
+  // Componente de Etiqueta Reutilizável
+  const FloatingLabel = ({ title, materialName }) => (
+    <Html position={[2.5, 0, 0]} center zIndexRange={[100, 0]}>
+      <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur px-3 py-1.5 rounded-md shadow-lg border border-slate-200 dark:border-slate-700 whitespace-nowrap pointer-events-none transition-colors">
+        <p className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">{title}</p>
+        <p className="text-[10px] font-medium text-brandAccent mt-0.5">{materialName || 'Slot Vazio'}</p>
+      </div>
+    </Html>
+  );
 
   return (
-    <group ref={groupRef} position={[0, 0, 0]}>
-      
-      <mesh position={[0, 1.2, 0]}>
-        <cylinderGeometry args={[2, 2, 0.4, 32]} />
-        <meshPhysicalMaterial {...getLayerProps('encapsulation', '#38BDF8')} />
+    <group 
+      onClick={(e) => { e.stopPropagation(); setExploded(!exploded); }}
+      onPointerOver={() => document.body.style.cursor = 'pointer'}
+      onPointerOut={() => document.body.style.cursor = 'auto'}
+    >
+      <mesh ref={topRef} position={[0, 0.6, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[2, 2, 0.3, 64]} />
+        <meshStandardMaterial {...getMaterialProps(topoMat)} />
+        {exploded && <FloatingLabel title="Encapsulamento" materialName={topoMat?.name} />}
       </mesh>
 
-      <mesh position={[0, 0, 0]}>
-        <cylinderGeometry args={[1.8, 1.8, 0.1, 32]} />
-        <meshPhysicalMaterial {...getLayerProps('circuit', '#F59E0B')} />
+      <mesh ref={midRef} position={[0, 0, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[1.7, 1.7, 0.15, 64]} />
+        <meshStandardMaterial {...getMaterialProps(meioMat)} />
+        {exploded && <FloatingLabel title="Circuito Ativo" materialName={meioMat?.name} />}
       </mesh>
 
-      <mesh position={[0, -1.2, 0]}>
-        <cylinderGeometry args={[2, 2, 0.4, 32]} />
-        <meshPhysicalMaterial {...getLayerProps('substrate', '#475569')} />
+      <mesh ref={baseRef} position={[0, -0.6, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[2, 2, 0.3, 64]} />
+        <meshStandardMaterial {...getMaterialProps(baseMat)} />
+        {exploded && <FloatingLabel title="Substrato" materialName={baseMat?.name} />}
       </mesh>
-
     </group>
   );
 }
