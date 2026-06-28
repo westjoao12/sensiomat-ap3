@@ -2,20 +2,25 @@ import React, { useState, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { MathUtils } from 'three';
 import useStore from '../../store/useStore';
-import { Html } from '@react-three/drei'; // Trocámos o Text por Html para melhor legibilidade
+import { Html } from '@react-three/drei';
 
 export default function SensorStack() {
-  const { slots, materials } = useStore((state) => ({
+  // Lemos o state.simulationResult para saber se foi Aprovado ou Falhou
+  const { slots, materials, simulationResult } = useStore((state) => ({
     slots: state.layers,
-    materials: state.materials
+    materials: state.materials,
+    simulationResult: state.simulationResult 
   }));
   
   const [exploded, setExploded] = useState(false);
+  
+  // Nova referência que controla TODO o conjunto para a rotação
+  const groupRef = useRef();
+  
   const topRef = useRef();
   const midRef = useRef();
   const baseRef = useRef();
 
-  // Segurança para evitar erros se os materiais ainda estiverem a carregar da API
   const findMaterial = (id) => {
     if (!Array.isArray(materials) || !id) return null;
     return materials.find(m => m.id === id);
@@ -25,39 +30,53 @@ export default function SensorStack() {
   const meioMat = findMaterial(slots.circuit);
   const baseMat = findMaterial(slots.substrate);
 
-  // Como o JSON não tem cores, mapeamos os IDs para cores realistas aqui
   const getMaterialColor = (id) => {
     const colors = {
-      'mat_cu_01': '#ea580c', // Cobre / Laranja
-      'mat_au_01': '#facc15', // Ouro / Amarelo brilhante
-      'mat_steel_01': '#94a3b8', // Aço / Cinza
-      'mat_alumina_01': '#f8fafc', // Alumina / Branco cerâmico
-      'mat_pdms_01': '#67e8f9', // PDMS / Ciano translúcido
-      'mat_si_01': '#10b981', // Silício / Verde esmeralda
-      'mat_graphene_01': '#0f172a', // Grafeno / Escuro
-      'mat_mos2_01': '#a855f7' // MoS2 / Púrpura
+      'mat_cu_01': '#ea580c',
+      'mat_au_01': '#facc15',
+      'mat_steel_01': '#94a3b8',
+      'mat_alumina_01': '#f8fafc',
+      'mat_pdms_01': '#67e8f9',
+      'mat_si_01': '#10b981',
+      'mat_graphene_01': '#0f172a',
+      'mat_mos2_01': '#a855f7'
     };
-    return colors[id] || '#cbd5e1'; // Cor padrão (cinza) para materiais desconhecidos
+    return colors[id] || '#cbd5e1';
   };
 
   const getMaterialProps = (material) => {
-    if (!material) return { color: '#e2e8f0', metalness: 0.1, roughness: 0.8, transparent: true, opacity: 0.3 };
+    let baseColor = getMaterialColor(material?.id);
     
-    // Agora lemos os dados exatamente como estão no seu JSON
+    // VERIFICAÇÃO DE STATUS: Sobrepõe a cor se houver uma simulação concluída
+    if (simulationResult && simulationResult.status) {
+      if (simulationResult.status === 'Aprovado') {
+        baseColor = '#22c55e'; // Verde de sucesso
+      } else if (simulationResult.status === 'Falha Crítica' || simulationResult.status === 'Inviável') {
+        baseColor = '#ef4444'; // Vermelho de erro
+      }
+    }
+
+    if (!material) return { color: baseColor, metalness: 0.1, roughness: 0.8, transparent: true, opacity: 0.3 };
+    
     const isMetal = material.category === 'Metal';
     const isTransparent = material.optical?.isTransparent === true;
     
     return {
-      color: getMaterialColor(material.id),
-      metalness: isMetal ? 1.0 : 0.1, // Metais com reflexo máximo no ambiente
-      roughness: isMetal ? 0.15 : (isTransparent ? 0.3 : 0.8), // Metais lisos, polímeros foscos
+      color: baseColor,
+      metalness: isMetal ? 1.0 : 0.1,
+      roughness: isMetal ? 0.15 : (isTransparent ? 0.3 : 0.8),
       transparent: isTransparent,
-      opacity: isTransparent ? 0.6 : 1, // Lemos o optical.isTransparent do JSON
+      opacity: isTransparent ? 0.6 : 1,
       side: 2
     };
   };
 
-  useFrame(() => {
+  useFrame((state, delta) => {
+    // ROTAÇÃO SUAVE DO SENSOR (recuperada)
+    if (groupRef.current) {
+      groupRef.current.rotation.y += delta * 0.4; // Ajuste o 0.4 para girar mais rápido ou mais devagar
+    }
+
     const topTargetY = exploded ? 1.5 : 0.6;
     const midTargetY = 0;
     const baseTargetY = exploded ? -1.5 : -0.6;
@@ -67,7 +86,6 @@ export default function SensorStack() {
     if (baseRef.current) baseRef.current.position.y = MathUtils.lerp(baseRef.current.position.y, baseTargetY, 0.1);
   });
 
-  // Componente de Etiqueta Reutilizável
   const FloatingLabel = ({ title, materialName }) => (
     <Html position={[2.5, 0, 0]} center zIndexRange={[100, 0]}>
       <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur px-3 py-1.5 rounded-md shadow-lg border border-slate-200 dark:border-slate-700 whitespace-nowrap pointer-events-none transition-colors">
@@ -79,6 +97,7 @@ export default function SensorStack() {
 
   return (
     <group 
+      ref={groupRef} // A REFERÊNCIA AQUI FAZ TUDO GIRAR JUNTO
       onClick={(e) => { e.stopPropagation(); setExploded(!exploded); }}
       onPointerOver={() => document.body.style.cursor = 'pointer'}
       onPointerOut={() => document.body.style.cursor = 'auto'}
