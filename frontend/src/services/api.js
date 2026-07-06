@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001/api/v1';
+//const API_URL = 'http://localhost:3001/api/v1';
+//const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
+// Se estiver em produção, usa o caminho relativo. Se for local, usa o localhost.
+const API_URL = import.meta.env.PROD ? '/api/v1' : 'http://localhost:3001/api/v1';
 
 export const fetchMaterials = async () => {
   try {
