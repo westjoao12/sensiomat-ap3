@@ -6,6 +6,9 @@ export default function Sidebar() {
   const { materials, environment, layers, setEnvironment, setLayerMaterial, runSimulation, isLoading, theme, toggleTheme } = useStore();
   const [activeDragLayer, setActiveDragLayer] = useState(null);
 
+  // NOVO ESTADO: Guarda o material clicado/tocado para mobile
+  const [selectedMobileMaterial, setSelectedMobileMaterial] = useState(null);
+
   const environments = [
     { id: 'env_body_implant', name: 'Biossensor Epidérmico / Implante' },
     { id: 'env_agri_soil', name: 'Sensor Agrícola de Subsolo (IoT)' },
@@ -61,6 +64,14 @@ export default function Sidebar() {
     const isDraggingOver = activeDragLayer === layerName;
     const material = safeMaterials.find(m => m.id === currentMaterialId);
 
+    // FUNÇÃO PARA LIDAR COM O TOQUE (MOBILE)
+    const handleZoneClick = () => {
+      if (selectedMobileMaterial) {
+        setLayerMaterial(layerName, selectedMobileMaterial);
+        setSelectedMobileMaterial(null); // Limpa a seleção após equipar
+      }
+    };
+
     return (
       <div className="space-y-1.5 px-6">
         <label className="flex items-center text-xs font-bold text-slate-600 dark:text-slate-400 gap-1.5">
@@ -68,6 +79,7 @@ export default function Sidebar() {
         </label>
         
         <div 
+          onClick={handleZoneClick} // ADICIONADO: Permite equipar com clique
           onDragOver={(e) => handleDragOver(e, layerName)}
           onDragLeave={handleDragLeave}
           onDrop={(e) => handleDrop(e, layerName)}
@@ -75,6 +87,7 @@ export default function Sidebar() {
             relative flex items-center justify-between p-3 rounded-lg border-2 transition-all duration-200
             ${isDraggingOver ? 'border-brandAccent bg-brandAccent/10 scale-[1.02]' : 'border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/30'}
             ${material ? 'border-solid border-slate-400 dark:border-slate-600 bg-white dark:bg-slate-800/80 shadow-sm dark:shadow-inner' : 'hover:border-slate-400 dark:hover:border-slate-500'}
+            ${selectedMobileMaterial && !material ? 'border-brandAccent/60 bg-brandAccent/5 cursor-pointer ring-2 ring-brandAccent/20' : ''} 
           `}
         >
           {material ? (
@@ -85,8 +98,11 @@ export default function Sidebar() {
                 <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">{material.category}</p>
               </div>
               <button 
-                onClick={() => removeMaterial(layerName)}
-                className="p-1.5 hover:bg-red-100 dark:hover:bg-red-500/20 text-slate-400 hover:text-red-500 dark:hover:text-red-400 rounded transition-colors"
+                onClick={(e) => { 
+                  e.stopPropagation(); // IMPORTANTE: Impede que o clique na lixeira dispare o evento da caixa
+                  removeMaterial(layerName); 
+                }}
+                className="p-1.5 hover:bg-red-100 dark:hover:bg-red-500/20 text-slate-400 hover:text-red-500 dark:hover:text-red-400 rounded transition-colors z-10 relative"
                 title="Remover material"
               >
                 <Trash2 size={14} />
@@ -94,8 +110,8 @@ export default function Sidebar() {
             </div>
           ) : (
             <div className="flex items-center justify-center w-full py-2 pointer-events-none">
-              <span className={`text-xs font-medium ${isDraggingOver ? 'text-brandAccent' : 'text-slate-400 dark:text-slate-500'}`}>
-                {isDraggingOver ? 'Solte para equipar' : 'Arraste um material aqui'}
+              <span className={`text-xs font-medium ${isDraggingOver || selectedMobileMaterial ? 'text-brandAccent' : 'text-slate-400 dark:text-slate-500'}`}>
+                {selectedMobileMaterial ? 'Toque aqui para equipar' : (isDraggingOver ? 'Solte para equipar' : 'Arraste ou toque num material')}
               </span>
             </div>
           )}
@@ -168,21 +184,31 @@ export default function Sidebar() {
         </h3>
         
         <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
-          {safeMaterials.map(m => (
-            <div 
-              key={m.id}
-              draggable
-              onDragStart={(e) => handleDragStart(e, m.id)}
-              className="flex items-center gap-3 p-2.5 bg-white dark:bg-slate-800/40 hover:bg-slate-50 dark:hover:bg-slate-700/60 border border-slate-200 dark:border-slate-700/50 hover:border-brandAccent/50 rounded cursor-grab active:cursor-grabbing transition-all shadow-sm group"
-            >
-              <GripVertical size={14} className="text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 shrink-0" />
-              <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${getMaterialDotColor(m.id)}`} />
-              <div className="min-w-0">
-                <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{m.name}</p>
-                <p className="text-[9px] text-slate-500 dark:text-slate-400 uppercase font-medium tracking-wide">{m.category}</p>
+          {safeMaterials.map(m => {
+            const isSelected = selectedMobileMaterial === m.id;
+            
+            return (
+              <div 
+                key={m.id}
+                draggable
+                onDragStart={(e) => handleDragStart(e, m.id)}
+                onClick={() => setSelectedMobileMaterial(isSelected ? null : m.id)} // ADICIONADO: Seleciona ou remove seleção ao tocar
+                className={`flex items-center gap-3 p-2.5 rounded cursor-grab active:cursor-grabbing transition-all shadow-sm group
+                  ${isSelected 
+                    ? 'bg-brandAccent/10 border-2 border-brandAccent dark:bg-brandAccent/20 scale-[1.02]' 
+                    : 'bg-white dark:bg-slate-800/40 hover:bg-slate-50 dark:hover:bg-slate-700/60 border border-slate-200 dark:border-slate-700/50 hover:border-brandAccent/50'
+                  }
+                `}
+              >
+                <GripVertical size={14} className={`${isSelected ? 'text-brandAccent' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'} shrink-0`} />
+                <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${getMaterialDotColor(m.id)}`} />
+                <div className="min-w-0 pointer-events-none">
+                  <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{m.name}</p>
+                  <p className="text-[9px] text-slate-500 dark:text-slate-400 uppercase font-medium tracking-wide">{m.category}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
