@@ -1,8 +1,8 @@
 export class SimulationEngine {
   /**
-   * Executa a análise heurística de compatibilidade físico-química da pilha de materiais.
-   * @param {Object} stack - Objeto contendo as instâncias completas dos materiais por camada.
-   * @param {Object} environment - Objeto de requisitos do ambiente de operação.
+   * Executa a análise heurística avançada de compatibilidade físico-química da pilha de materiais.
+   * @param {Object} stack - Instâncias completas dos materiais por camada.
+   * @param {Object} environment - Requisitos do ambiente de operação.
    */
   static runHeuristicAnalysis(stack, environment) {
     const { substrate, circuit, encapsulation } = stack;
@@ -51,7 +51,7 @@ export class SimulationEngine {
       });
     }
 
-    // 3. ANÁLISE DAS PROPRIEDADES TÉRMICAS
+    // 3. ANÁLISE DAS PROPRIEDADES TÉRMICAS ESTRUTURAIS
     const maxLayerTemp = Math.min(
       substrate.thermal.maxOperatingTempC,
       circuit.thermal.maxOperatingTempC,
@@ -61,7 +61,7 @@ export class SimulationEngine {
     if (reqs.maxOperatingTempC > maxLayerTemp) {
       criticalFailuresCount++;
       logs.push({
-        property: "Térmica (Cap. 19)",
+        property: "Térmica Estrutural (Cap. 19)",
         status: "CRITICAL_FAIL",
         layer: "Sistema Global",
         material: "Múltiplos",
@@ -69,7 +69,7 @@ export class SimulationEngine {
       });
     } else {
       logs.push({
-        property: "Térmica (Cap. 19)",
+        property: "Térmica Estrutural (Cap. 19)",
         status: "PASS",
         layer: "Sistema Global",
         material: "Múltiplos",
@@ -77,7 +77,30 @@ export class SimulationEngine {
       });
     }
 
-    // 4. ANÁLISE DAS PROPRIEDADES MAGNÉTICAS
+    // 4. NOVA EQUAÇÃO: ANÁLISE DE DISSIPAÇÃO TÉRMICA FLUXO / CHOKE (Lei de Fourier aplicada)
+    // Calcula o descasamento de condutividade térmica entre o gerador de calor (circuito) e o dissipador/barreira (encapsulamento)
+    const thermalMismatchRatio = circuit.thermal.thermalConductivityWmK / encapsulation.thermal.thermalConductivityWmK;
+    
+    if (reqs.maxOperatingTempC > 50 && thermalMismatchRatio > 1000) {
+      criticalFailuresCount++;
+      logs.push({
+        property: "Dissipação Térmica (Lei de Fourier)",
+        status: "CRITICAL_FAIL",
+        layer: "Interface Circuito-Encapsulamento",
+        material: `${circuit.name} / ${encapsulation.name}`,
+        scientificReason: `Gradiente de condução crítico. A razão de condutividade térmica (${thermalMismatchRatio.toFixed(1)}) indica aprisionamento de fluxo de calor. O encapsulamento atua como isolante severo em ambiente aquecido, induzindo efeito Choke.`
+      });
+    } else {
+      logs.push({
+        property: "Dissipação Térmica (Lei de Fourier)",
+        status: "PASS",
+        layer: "Interface Circuito-Encapsulamento",
+        material: `${circuit.name} / ${encapsulation.name}`,
+        scientificReason: "Gradiente de transferência térmica calibrado. Sem risco iminente de colapso por acúmulo de energia reticular."
+      });
+    }
+
+    // 5. ANÁLISE DAS PROPRIEDADES MAGNÉTICAS
     if (reqs.sensitiveToMagneticInterference && encapsulation.magnetic.causesInterference) {
       criticalFailuresCount++;
       logs.push({
@@ -97,7 +120,7 @@ export class SimulationEngine {
       });
     }
 
-    // 5. ANÁLISE DAS PROPRIEDADES ÓPTICAS
+    // 6. ANÁLISE DAS PROPRIEDADES ÓPTICAS
     if (reqs.requiresOpticalTransparency && !substrate.optical.isTransparent) {
       criticalFailuresCount++;
       logs.push({
@@ -117,7 +140,7 @@ export class SimulationEngine {
       });
     }
 
-    // 6. ANÁLISE DAS PROPRIEDADES DETERIORATIVAS (Corrosão e Bio)
+    // 7. ANÁLISE DAS PROPRIEDADES DETERIORATIVAS (Corrosão e Bio)
     if (reqs.requiresBiocompatibility && (!substrate.deteriorative.isBiocompatible || !encapsulation.deteriorative.isBiocompatible)) {
       criticalFailuresCount++;
       logs.push({
@@ -146,8 +169,8 @@ export class SimulationEngine {
       });
     }
 
-    // CÁLCULO DE SCORE GERAL DE VIABILIDADE
-    const totalChecks = 6;
+    // CÁLCULO DE SCORE GERAL DE VIABILIDADE ATUALIZADO (Total de 7 validações agora)
+    const totalChecks = 7;
     const passedChecks = totalChecks - criticalFailuresCount;
     const viabilityScore = Math.round((passedChecks / totalChecks) * 100);
 
