@@ -86,5 +86,38 @@
     "magnetic": { "behavior": "Diamagnético", "causesInterference": false },
     "optical": { "isTransparent": true },
     "deteriorative": { "oxidationResistance": 8, "isBiocompatible": false }
+  },
+  {
+    "id": "mat_pt_01",
+    "name": "Platina Pura (Pt)",
+    "category": "Metal",
+    "mechanical": { "elasticModulusGPa": 168, "tensileStrengthMPa": 125, "isFlexible": true },
+    "electrical": { "conductivitySm": 9.66e6, "bandgapEV": 0, "isConductor": true },
+    "thermal": { "thermalConductivityWmK": 71.6, "maxOperatingTempC": 1400 },
+    "magnetic": { "behavior": "Paramagnético", "causesInterference": false },
+    "optical": { "isTransparent": false },
+    "deteriorative": { "oxidationResistance": 10, "isBiocompatible": true }
+  },
+  {
+    "id": "mat_ito_01",
+    "name": "Óxido de Índio e Estanho (ITO)",
+    "category": "Cerâmica",
+    "mechanical": { "elasticModulusGPa": 116, "tensileStrengthMPa": 150, "isFlexible": false },
+    "electrical": { "conductivitySm": 1.0e4, "bandgapEV": 3.7, "isConductor": true },
+    "thermal": { "thermalConductivityWmK": 11.0, "maxOperatingTempC": 350 },
+    "magnetic": { "behavior": "Diamagnético", "causesInterference": false },
+    "optical": { "isTransparent": true },
+    "deteriorative": { "oxidationResistance": 9, "isBiocompatible": true }
+  },
+  {
+    "id": "mat_pi_01",
+    "name": "Poliimida / Kapton",
+    "category": "Polímero",
+    "mechanical": { "elasticModulusGPa": 2.5, "tensileStrengthMPa": 231, "isFlexible": true },
+    "electrical": { "conductivitySm": 1.0e-15, "bandgapEV": 3.1, "isConductor": false },
+    "thermal": { "thermalConductivityWmK": 0.12, "maxOperatingTempC": 400 },
+    "magnetic": { "behavior": "Diamagnético", "causesInterference": false },
+    "optical": { "isTransparent": false },
+    "deteriorative": { "oxidationResistance": 8, "isBiocompatible": true }
   }
 ]
