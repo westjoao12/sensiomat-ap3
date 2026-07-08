@@ -1,57 +1,116 @@
-import axios from 'axios';
-
 export class MaterialsProjectService {
-  /**
-   * Conecta à API do Materials Project e mapeia propriedades quânticas de cristais para o SensioMat.
-   * @param {string} materialId - ID único do Materials Project (Ex: mp-149)
-   */
-  static async fetchAndMapMaterial(materialId) {
-    const apiKey = process.env.MATERIALS_PROJECT_API_KEY;
-    if (!apiKey) throw new Error("API Key do Materials Project não configurada no .env.");
 
-    const url = `https://api.materialsproject.org/materials/${materialId}/summary/`;
+    static BASE_URL = "https://api.materialsproject.org";
 
-    try {
-      const response = await axios.get(url, {
-        headers: { 'X-API-KEY': apiKey }
-      });
+    // Busca um material na API do Materials Project usando fetch nativo
+    static async fetchSummary(materialId) {
+        const apiKey = process.env.MATERIALS_PROJECT_API_KEY;
 
-      const raw = response.data.data[0];
-      if (!raw) throw new Error("Material não localizado no banco quântico da API.");
-
-      // MAPEAMENTO INTELIGENTE DA FÍSICA DE MATERIAIS
-      return {
-        id: `mp_${raw.material_id}`,
-        name: `${raw.formula_pretty} (Via MP API)`,
-        category: raw.is_metal ? "Metal" : "Semicondutor",
-        mechanical: {
-          elasticModulusGPa: raw.bulk_modulus?.voigt || 120, // Heurística fallback
-          tensileStrengthMPa: raw.is_metal ? 250 : 50,
-          isFlexible: raw.bulk_modulus?.voigt < 100
-        },
-        electrical: {
-          conductivitySm: raw.is_metal ? 1.0e6 : 1.0e-2,
-          bandgapEV: raw.band_gap || 0,
-          isConductor: raw.band_gap === 0
-        },
-        thermal: {
-          thermalConductivityWmK: raw.is_metal ? 150 : 1.5,
-          maxOperatingTempC: raw.is_metal ? 600 : 250
-        },
-        magnetic: {
-          behavior: raw.ordering || "Diamagnético",
-          causesInterference: raw.ordering === "Ferromagnetic"
-        },
-        optical: {
-          isTransparent: raw.band_gap > 3.0 // Transparência no espectro visível por gap de energia
-        },
-        deteriorative: {
-          oxidationResistance: raw.energy_above_hull < 0.1 ? 9 : 4, // Estabilidade termodinâmica
-          isBiocompatible: false // Requer curadoria médica humana
+        if (!apiKey) {
+            throw new Error("A variável MATERIALS_PROJECT_API_KEY não foi encontrada.");
         }
-      };
-    } catch (error) {
-      throw new Error(`Erro na ponte de dados quânticos: ${error.message}`);
+
+        const fields = [
+            "material_id",
+            "formula_pretty",
+            "is_metal",
+            "band_gap",
+            "ordering",
+            "energy_above_hull",
+            "density",
+            "volume",
+            "elements",
+            "nsites",
+            "symmetry"
+        ].join(",");
+
+        const url = `${this.BASE_URL}/materials/summary?material_ids=${materialId}&_fields=${fields}`;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "X-API-KEY": apiKey,
+                "Accept": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            const body = await response.text();
+            throw new Error(`Materials Project (${response.status}) -> ${body}`);
+        }
+
+        const json = await response.json();
+
+        if (!json.data || json.data.length === 0) {
+            throw new Error(`Material ${materialId} não encontrado.`);
+        }
+
+        return json.data[0];
     }
-  }
+
+    // Traduz o modelo do Materials Project para o modelo do SensioMat
+    static mapToSensioMat(raw) {
+        const isMetal = raw.is_metal === true;
+        const bandGap = raw.band_gap ?? 0;
+        const ordering = raw.ordering ?? "Unknown";
+        const energyHull = raw.energy_above_hull ?? 999;
+
+        return {
+            id: `mat_${raw.material_id.replace("-", "_")}`,
+            externalId: raw.material_id,
+            source: "Materials Project",
+            name: raw.formula_pretty,
+            category: isMetal ? "Metal" : "Semicondutor",
+            
+            crystal: {
+                density: raw.density,
+                volume: raw.volume,
+                elements: raw.elements,
+                atoms: raw.nsites,
+                symmetry: raw.symmetry
+            },
+
+            mechanical: {
+                // Heurística restaurada para não quebrar as equações e logs do SimulationEngine
+                elasticModulusGPa: isMetal ? 120 : 250,
+                tensileStrengthMPa: isMetal ? 250 : 50,
+                isFlexible: isMetal // Metais puros tendem a ser mais dúcteis/conformáveis que semicondutores
+            },
+
+            electrical: {
+                bandgapEV: bandGap,
+                conductivitySm: isMetal ? 1e6 : 1e-2,
+                isConductor: bandGap <= 0.01
+            },
+
+            thermal: {
+                thermalConductivityWmK: isMetal ? 180 : 1.5,
+                maxOperatingTempC: isMetal ? 650 : 250
+            },
+
+            magnetic: {
+                behavior: ordering,
+                causesInterference: ordering === "FM" || ordering === "Ferromagnetic"
+            },
+
+            optical: {
+                isTransparent: bandGap > 3
+            },
+
+            deteriorative: {
+                oxidationResistance: energyHull < 0.05 ? 10 : energyHull < 0.10 ? 8 : energyHull < 0.20 ? 6 : 3,
+                isBiocompatible: false
+            }
+        };
+    }
+
+    // Método público usado pelo Controller
+    static async fetchAndMapMaterial(materialId) {
+        try {
+            const raw = await this.fetchSummary(materialId);
+            return this.mapToSensioMat(raw);
+        } catch (error) {
+            throw new Error(`Erro ao consultar o Materials Project: ${error.message}`);
+        }
+    }
 }

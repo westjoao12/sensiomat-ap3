@@ -1,5 +1,6 @@
 import { DataRepository } from '../repositories/dataRepository.js';
 import { SimulationEngine } from '../services/simulationEngine.js';
+import { MaterialsProjectService } from '../services/materialsProjectService.js';
 
 export class SimulationController {
   static async getCatalog(req, res) {
@@ -64,6 +65,37 @@ export class SimulationController {
       return res.status(statusCode).json({
         success: false,
         error: error.message
+      });
+    }
+  }
+
+  // Lida com a requisição de sincronização
+  static async syncMaterial(req, res) {
+    try {
+      const { materialId } = req.body;
+      
+      // Validação básica do formato do ID do Materials Project
+      if (!materialId || !materialId.startsWith('mp-')) {
+        return res.status(400).json({
+          success: false,
+          error: "Formato de ID inválido. Utilize o padrão do Materials Project (ex: mp-149 para Silício)."
+        });
+      }
+
+      // Chama o serviço que bate na API do MIT/Berkeley e traduz os dados quânticos
+      const mappedMaterial = await MaterialsProjectService.fetchAndMapMaterial(materialId);
+
+      return res.status(200).json({
+        success: true,
+        message: "Material sincronizado e mapeado com sucesso para o padrão SensioMat.",
+        data: mappedMaterial
+      });
+      
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        error: "Falha na sincronização com o banco quântico.",
+        details: error.message
       });
     }
   }
