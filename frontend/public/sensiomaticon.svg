@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 350" width="100%" height="100%">
+  <defs>
+    <linearGradient id="layerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#2dd4bf"/>
+    </linearGradient>
+    
+    <linearGradient id="circuitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(125, 190)">
+    
+    <path d="M-100,75 L0,125 L100,75 L0,25 Z" fill="#94a3b8" opacity="0.9"/>
+    <path d="M-100,75 L0,125 L0,145 L-100,95 Z" fill="#64748b"/>
+    <path d="M100,75 L0,125 L0,145 L100,95 Z" fill="#475569"/>
+
+    <path d="M-80,40 L0,80 L80,40 L0,0 Z" fill="url(#circuitGrad)"/>
+    <path d="M-80,40 L0,80 L0,95 L-80,55 Z" fill="#c2410c"/>
+    <path d="M80,40 L0,80 L0,95 L80,55 Z" fill="#9a3412"/>
+    
+    <path d="M-40,30 L0,50 L40,30" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.6"/>
+    <path d="M-20,20 L0,30 L20,20" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.6"/>
+
+    <path d="M-100,0 L0,50 L100,0 L0,-50 Z" fill="url(#layerGrad)" opacity="0.85"/>
+    <path d="M-100,0 L0,50 L0,70 L-100,20 Z" fill="#0284c7" opacity="0.8"/>
+    <path d="M100,0 L0,50 L0,70 L100,20 Z" fill="#0369a1" opacity="0.8"/>
+
+    <path d="M0,-110 Q25,-135 50,-110" fill="none" stroke="#0ea5e9" stroke-width="6" stroke-linecap="round"/>
+    <path d="M0,-140 Q40,-180 80,-140" fill="none" stroke="#2dd4bf" stroke-width="6" stroke-linecap="round"/>
+  </g>
+</svg>

@@ -126,9 +126,16 @@ export default function Sidebar() {
       {/* HEADER COM TOGGLE DE TEMA */}
       <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-transparent mb-6 transition-colors duration-300">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-brandAccent flex items-center justify-center font-bold text-white shadow-md">
-            SM
+          
+          {/* NOVA LOGO APLICADA AQUI */}
+          <div className="w-11 h-11 flex items-center justify-center shrink-0">
+            <img 
+              src="/sensiomaticon.svg" 
+              alt="Logo SensioMat" 
+              className="w-full h-full object-contain drop-shadow-sm"
+            />
           </div>
+
           <div>
             <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">SensioMat</h1>
             <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Motor de Arquitetura IoT</p>
