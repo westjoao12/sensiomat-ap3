@@ -89,25 +89,25 @@ export default function Sidebar() {
     <div className="flex flex-col h-full relative pb-6">
       
       {/* HEADER COM BANDEIRAS DE IDIOMA */}
-      <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-transparent mb-6 transition-colors duration-300 gap-4">
+      <div className="px-5 py-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-transparent mb-6 transition-colors duration-300">
         
         {/* BLOCO DO LOGO E TÍTULO */}
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-11 h-11 flex items-center justify-center shrink-0">
+        <div className="flex items-center gap-2.5">
+          <div className="w-10 h-10 flex items-center justify-center shrink-0">
             <img src="/sensiomaticon.svg" alt="Logo SensioMat" className="w-full h-full object-contain drop-shadow-sm" />
           </div>
-          <div className="min-w-0">
-            <h1 translate="no" className="text-xl font-bold tracking-tight text-slate-900 dark:text-white truncate">
+          <div>
+            <h1 translate="no" className="text-xl font-bold tracking-tight text-slate-900 dark:text-white whitespace-nowrap">
               {t('app_title')}
             </h1>
-            <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 truncate">
+            <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap tracking-wide">
               {t('app_subtitle')}
             </p>
           </div>
         </div>
         
         {/* CONTROLES (IDIOMA E TEMA) */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           <button 
             onClick={() => i18n.changeLanguage('pt')} 
             className={`w-5 h-3.5 md:w-6 md:h-4 rounded-sm overflow-hidden shadow-sm hover:scale-110 transition-all ${i18n.language === 'pt' ? 'opacity-100 ring-2 ring-brandAccent ring-offset-2 dark:ring-offset-slate-900' : 'opacity-40 grayscale hover:grayscale-0 hover:opacity-100'}`} 
@@ -124,9 +124,9 @@ export default function Sidebar() {
             <img src="https://flagcdn.com/w40/us.png" alt="Bandeira dos EUA" className="w-full h-full object-cover" />
           </button>
           
-          <div className="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></div>
+          <div className="w-px h-4 bg-slate-300 dark:bg-slate-700 mx-0.5"></div>
           
-          <button onClick={toggleTheme} className="p-1.5 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors">
+          <button onClick={toggleTheme} className="p-1 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors">
             {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>
         </div>
