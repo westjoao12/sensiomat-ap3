@@ -127,7 +127,6 @@ export default function Sidebar() {
       <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-transparent mb-6 transition-colors duration-300">
         <div className="flex items-center gap-3">
           
-          {/* NOVA LOGO APLICADA AQUI */}
           <div className="w-11 h-11 flex items-center justify-center shrink-0">
             <img 
               src="/sensiomaticon.svg" 
