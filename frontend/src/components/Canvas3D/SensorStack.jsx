@@ -3,9 +3,11 @@ import { useFrame } from '@react-three/fiber';
 import { MathUtils } from 'three';
 import useStore from '../../store/useStore';
 import { Html } from '@react-three/drei';
+import { useTranslation } from 'react-i18next';
 
 export default function SensorStack() {
-  // Lemos o state.simulationResult para saber se foi Aprovado ou Falhou
+  const { t } = useTranslation();
+  
   const { slots, materials, simulationResult } = useStore((state) => ({
     slots: state.layers,
     materials: state.materials,
@@ -14,9 +16,7 @@ export default function SensorStack() {
   
   const [exploded, setExploded] = useState(false);
   
-  // Nova referência que controla TODO o conjunto para a rotação
   const groupRef = useRef();
-  
   const topRef = useRef();
   const midRef = useRef();
   const baseRef = useRef();
@@ -46,15 +46,13 @@ export default function SensorStack() {
 
   const getMaterialProps = (material) => {
     let baseColor = getMaterialColor(material?.id);
-    
-    // CORREÇÃO DEFINITIVA: Lemos 'globalStatus' exatamente como o backend (SimulationEngine) envia
     const status = simulationResult?.globalStatus;
 
     if (status) {
       if (status === 'APPROVED') {
-        baseColor = '#22c55e'; // Verde para simulação APROVADA
+        baseColor = '#22c55e';
       } else if (status === 'REJECTED') {
-        baseColor = '#ef4444'; // Vermelho para simulação REJEITADA
+        baseColor = '#ef4444';
       }
     }
 
@@ -74,9 +72,8 @@ export default function SensorStack() {
   };
 
   useFrame((state, delta) => {
-    // ROTAÇÃO SUAVE DO SENSOR (recuperada)
     if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.4; // Ajuste o 0.4 para girar mais rápido ou mais devagar
+      groupRef.current.rotation.y += delta * 0.4;
     }
 
     const topTargetY = exploded ? 1.5 : 0.6;
@@ -92,14 +89,14 @@ export default function SensorStack() {
     <Html position={[2.5, 0, 0]} center zIndexRange={[100, 0]}>
       <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur px-3 py-1.5 rounded-md shadow-lg border border-slate-200 dark:border-slate-700 whitespace-nowrap pointer-events-none transition-colors">
         <p className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">{title}</p>
-        <p className="text-[10px] font-medium text-brandAccent mt-0.5">{materialName || 'Slot Vazio'}</p>
+        <p className="text-[10px] font-medium text-brandAccent mt-0.5">{materialName || t('empty_slot_label')}</p>
       </div>
     </Html>
   );
 
   return (
     <group 
-      ref={groupRef} // A REFERÊNCIA AQUI FAZ TUDO GIRAR JUNTO
+      ref={groupRef}
       onClick={(e) => { e.stopPropagation(); setExploded(!exploded); }}
       onPointerOver={() => document.body.style.cursor = 'pointer'}
       onPointerOut={() => document.body.style.cursor = 'auto'}
@@ -107,19 +104,19 @@ export default function SensorStack() {
       <mesh ref={topRef} position={[0, 0.6, 0]} castShadow receiveShadow>
         <cylinderGeometry args={[2, 2, 0.3, 64]} />
         <meshStandardMaterial {...getMaterialProps(topoMat)} />
-        {exploded && <FloatingLabel title="Encapsulamento" materialName={topoMat?.name} />}
+        {exploded && <FloatingLabel title={t('layer_top')} materialName={topoMat?.name} />}
       </mesh>
 
       <mesh ref={midRef} position={[0, 0, 0]} castShadow receiveShadow>
         <cylinderGeometry args={[1.7, 1.7, 0.15, 64]} />
         <meshStandardMaterial {...getMaterialProps(meioMat)} />
-        {exploded && <FloatingLabel title="Circuito Ativo" materialName={meioMat?.name} />}
+        {exploded && <FloatingLabel title={t('layer_mid')} materialName={meioMat?.name} />}
       </mesh>
 
       <mesh ref={baseRef} position={[0, -0.6, 0]} castShadow receiveShadow>
         <cylinderGeometry args={[2, 2, 0.3, 64]} />
         <meshStandardMaterial {...getMaterialProps(baseMat)} />
-        {exploded && <FloatingLabel title="Substrato" materialName={baseMat?.name} />}
+        {exploded && <FloatingLabel title={t('layer_base')} materialName={baseMat?.name} />}
       </mesh>
     </group>
   );
