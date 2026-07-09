@@ -1,13 +1,11 @@
-
 export function runSimulation(slots) {
   const { topo, meio, base } = slots;
   
-  // Se faltar algum material, a simulação falha imediatamente
   if (!topo || !meio || !base) {
     return {
       status: 'Incompleto',
       score: 0,
-      criticalFailures: ["Preencha todas as camadas da arquitetura para simular."],
+      criticalFailures: [{ key: 'err_fill_layers' }],
       approvals: []
     };
   }
@@ -16,37 +14,35 @@ export function runSimulation(slots) {
   const criticalFailures = [];
   const approvals = [];
 
-  // 1. Análise Mecânica (Base/Substrato)
-  // O substrato num biossensor epidérmico precisa de ser flexível (Polímeros geralmente têm baixo módulo de Young)
-  if (base.category === 'CERÂMICA' || base.category === 'METAL') {
+  // 1. Mecânica
+  if (base.category === 'Cerâmica' || base.category === 'Metal' || base.category === 'CERÂMICA' || base.category === 'METAL') {
     score -= 40;
-    criticalFailures.push(`MECÂNICA: O ambiente exige conformação flexível, mas o material da base (${base.name}) tem comportamento rígido/frágil.`);
+    criticalFailures.push({ property: 'MECÂNICA', layer: 'Substrato', key: 'err_mechanics', material: base.name });
   } else {
-    approvals.push(`MECÂNICA: Integridade estrutural e flexibilidade garantidas pelo material ${base.name}.`);
+    approvals.push({ property: 'MECÂNICA', layer: 'Substrato', key: 'ok_mechanics', material: base.name });
   }
 
-  // 2. Análise Elétrica (Meio/Circuito)
-  // O circuito ativo precisa de ser altamente condutivo (Metais ou Materiais 2D como Grafeno)
-  if (meio.category === 'POLÍMERO' || meio.category === 'CERÂMICA') {
+  // 2. Elétrica
+  if (meio.category === 'Polímero' || meio.category === 'Cerâmica' || meio.category === 'POLÍMERO' || meio.category === 'CERÂMICA') {
     score -= 50;
-    criticalFailures.push(`ELÉTRICA: Falha no circuito. ${meio.name} é um isolante e não permite mobilidade eletrónica adequada.`);
+    criticalFailures.push({ property: 'ELÉTRICA', layer: 'Circuito Ativo', key: 'err_electrical', material: meio.name });
   } else {
-    approvals.push(`ELÉTRICA: Alta mobilidade eletrónica garantida pela escolha de ${meio.name}.`);
+    approvals.push({ property: 'ELÉTRICA', layer: 'Circuito Ativo', key: 'ok_electrical', material: meio.name });
   }
 
-  // 3. Análise Térmica/Isolamento (Topo/Encapsulamento)
-  // O topo precisa proteger o circuito do ambiente e evitar superaquecimento da pele
-  if (topo.category === 'METAL') {
+  // 3. Térmica
+  if (topo.category === 'Metal' || topo.category === 'METAL') {
     score -= 30;
-    criticalFailures.push(`TÉRMICA: ${topo.name} no encapsulamento causa dissipação térmica excessiva para a epiderme.`);
+    criticalFailures.push({ property: 'TÉRMICA', layer: 'Encapsulamento', key: 'err_thermal', material: topo.name });
   } else {
-    approvals.push(`TÉRMICA: Estabilidade e isolamento térmico garantidos por ${topo.name}.`);
+    approvals.push({ property: 'TÉRMICA', layer: 'Encapsulamento', key: 'ok_thermal', material: topo.name });
   }
 
+  // ATENÇÃO: Uniformizei o retorno para bater certo com as chaves que o frontend espera.
   return {
-    status: score >= 80 ? 'Aprovado' : score > 0 ? 'Falha Crítica' : 'Inviável',
-    score: Math.max(0, score),
-    criticalFailures,
-    approvals
+    globalStatus: score >= 80 ? 'APPROVED' : score > 0 ? 'REJECTED' : 'REJECTED',
+    viabilityScorePercentage: Math.max(0, score),
+    criticalFailuresDetected: criticalFailures.length,
+    diagnosticLogs: [...criticalFailures.map(f => ({...f, status: 'CRITICAL_FAIL'})), ...approvals.map(a => ({...a, status: 'PASS'}))]
   };
 }
