@@ -89,14 +89,28 @@ export default function Sidebar() {
         </div>
         
         {/* CONTROLES (IDIOMA E TEMA) */}
-        <div className="flex items-center gap-1">
-          <button onClick={() => i18n.changeLanguage('pt')} className={`text-lg p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors ${i18n.language === 'pt' ? 'opacity-100 scale-110' : 'opacity-50 grayscale'}`} title="Português">
-            🇦🇴
+        {/* CONTROLES (IDIOMA E TEMA) */}
+        <div className="flex items-center gap-2">
+          {/* Bandeira de Angola */}
+          <button 
+            onClick={() => i18n.changeLanguage('pt')} 
+            className={`w-6 h-4 md:w-7 md:h-5 rounded-[3px] overflow-hidden shadow-sm hover:scale-110 transition-all ${i18n.language === 'pt' ? 'opacity-100 ring-2 ring-brandAccent ring-offset-2 dark:ring-offset-slate-900' : 'opacity-40 grayscale hover:grayscale-0 hover:opacity-100'}`} 
+            title="Português (Angola)"
+          >
+            <img src="https://flagcdn.com/w40/ao.png" alt="Bandeira de Angola" className="w-full h-full object-cover" />
           </button>
-          <button onClick={() => i18n.changeLanguage('en')} className={`text-lg p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors ${i18n.language === 'en' ? 'opacity-100 scale-110' : 'opacity-50 grayscale'}`} title="English">
-            🇺🇸
+          
+          {/* Bandeira dos EUA */}
+          <button 
+            onClick={() => i18n.changeLanguage('en')} 
+            className={`w-6 h-4 md:w-7 md:h-5 rounded-[3px] overflow-hidden shadow-sm hover:scale-110 transition-all ${i18n.language === 'en' ? 'opacity-100 ring-2 ring-brandAccent ring-offset-2 dark:ring-offset-slate-900' : 'opacity-40 grayscale hover:grayscale-0 hover:opacity-100'}`} 
+            title="English"
+          >
+            <img src="https://flagcdn.com/w40/us.png" alt="Bandeira dos EUA" className="w-full h-full object-cover" />
           </button>
+          
           <div className="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></div>
+          
           <button onClick={toggleTheme} className="p-2 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors">
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
