@@ -32,7 +32,6 @@ export default function Report() {
             {t('report_title', 'SensioMat Diagnostic')}
           </h2>
         </div>
-        {/* Subtítulo restaurado */}
         <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">
           {t('report_subtitle', 'Análise de Física de Materiais (Heurística)')}
         </p>
@@ -106,17 +105,22 @@ export default function Report() {
             {warnings.map((warning, idx) => (
               <div key={idx} className="bg-white dark:bg-darkSurface border border-red-200 dark:border-red-900/40 rounded-lg p-4 shadow-sm">
                 <div className="flex justify-between items-center gap-2 mb-2">
-                   <span className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider truncate">{warning.property}</span>
+                   <span className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider truncate">
+                     {t(warning.propertyKey)}
+                   </span>
                    <span className="text-[10px] font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-transparent px-2 py-0.5 rounded-full shrink-0">
-                     {t(warning.layer) || warning.layer}
+                     {t(warning.layerKey)}
                    </span>
                 </div>
+                {/* AQUI ACONTECE A MÁGICA DA TRADUÇÃO COM VARIÁVEIS */}
                 <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mt-2 leading-relaxed">
-                  {warning.scientificReason}
+                  {t(warning.reasonKey, warning.reasonVars)}
                 </p>
                 <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-3 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-600"></span>
-                  {t('material_label', 'Material')}: <span className="text-slate-600 dark:text-slate-300">{warning.material}</span>
+                  {t('material_label', 'Material')}: <span className="text-slate-600 dark:text-slate-300">
+                    {warning.materialKey ? t(warning.materialKey) : warning.material}
+                  </span>
                 </p>
               </div>
             ))}
@@ -133,22 +137,28 @@ export default function Report() {
             {successes.map((success, idx) => (
               <div key={idx} className="bg-slate-50/50 dark:bg-slate-800/20 rounded-lg p-4 border-l-[3px] border-green-500 border-y border-r border-y-slate-100 border-r-slate-100 dark:border-y-transparent dark:border-r-transparent shadow-sm">
                 <div className="flex justify-between items-center gap-2 mb-2">
-                   <span className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-wider truncate">{success.property}</span>
+                   <span className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-wider truncate">
+                     {t(success.propertyKey)}
+                   </span>
                    <span className="text-[10px] font-medium text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-transparent px-2 py-0.5 rounded-full shrink-0">
-                     {t(success.layer) || success.layer}
+                     {t(success.layerKey)}
                    </span>
                 </div>
+                {/* AQUI ACONTECE A MÁGICA DA TRADUÇÃO COM VARIÁVEIS */}
                 <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mt-2 leading-relaxed">
-                  {success.scientificReason}
+                  {t(success.reasonKey, success.reasonVars)}
                 </p>
                 <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-3 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-600"></span>
-                  {t('material_label', 'Material')}: <span className="text-slate-600 dark:text-slate-300">{success.material}</span>
+                  {t('material_label', 'Material')}: <span className="text-slate-600 dark:text-slate-300">
+                    {success.materialKey ? t(success.materialKey) : success.material}
+                  </span>
                 </p>
               </div>
             ))}
           </div>
         )}
+        
       </div>
     </div>
   );
