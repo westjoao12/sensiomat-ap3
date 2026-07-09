@@ -79,5 +79,10 @@
   "reason_optic_pass": "Índice de refração e absorção eletrônica permitem a livre propagação dos fótons.",
   "reason_bio_fail": "As camadas em contato com o ambiente geram reações citotóxicas ou acionam resposta imunológica do hospedeiro.",
   "reason_corr_fail": "O potencial eletroquímico resultará em dissolução anódica (corrosão severa) perante o ambiente.",
-  "reason_corr_pass": "Passivação química excelente contra agentes oxidantes externos."
+  "reason_corr_pass": "Passivação química excelente contra agentes oxidantes externos.",
+  
+  "status_rejected": "Falha Crítica",
+  "no_failures": "Nenhuma falha estrutural detectada.",
+  "failures_count": "{{count}} falha(s) estrutural(is) detectada(s).",
+  "viability_score": "Score"
 }

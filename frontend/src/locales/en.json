@@ -79,5 +79,10 @@
   "reason_optic_pass": "Refractive index and electronic absorption allow the free propagation of photons.",
   "reason_bio_fail": "The layers in direct contact with the environment generate cytotoxic reactions or trigger an immune response from the host organism.",
   "reason_corr_fail": "The material's electrochemical potential will result in anodic dissolution (severe corrosion) given the salinity and acidity of the selected operating environment.",
-  "reason_corr_pass": "Excellent chemical passivation against external oxidizing agents."
+  "reason_corr_pass": "Excellent chemical passivation against external oxidizing agents.",
+
+  "status_rejected": "Critical Failure",
+  "no_failures": "No structural failures detected.",
+  "failures_count": "{{count}} structural failure(s) detected.",
+  "viability_score": "Score"
 }
