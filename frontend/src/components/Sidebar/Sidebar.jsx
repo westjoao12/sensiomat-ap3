@@ -19,13 +19,25 @@ export default function Sidebar() {
 
   const safeMaterials = Array.isArray(materials) ? materials : [];
 
+  // NOVO: Função segura para mapear categorias com acentos para as chaves do dicionário
+  const getCategoryKey = (category) => {
+    const map = {
+      'Metal': 'cat_metal',
+      'Cerâmica': 'cat_ceramic',
+      'Polímero': 'cat_polymer',
+      'Semicondutor': 'cat_semiconductor',
+      'Material 2D': 'cat_2d'
+    };
+    return map[category] || 'cat_metal';
+  };
+
   const handleDragStart = (e, materialId) => { e.dataTransfer.setData('materialId', materialId); e.dataTransfer.effectAllowed = 'copy'; };
   const handleDragOver = (e, layerName) => { e.preventDefault(); if (activeDragLayer !== layerName) setActiveDragLayer(layerName); };
   const handleDragLeave = () => setActiveDragLayer(null);
   const handleDrop = (e, layerName) => { e.preventDefault(); setActiveDragLayer(null); const materialId = e.dataTransfer.getData('materialId'); if (materialId) setLayerMaterial(layerName, materialId); };
   const removeMaterial = (layerName) => setLayerMaterial(layerName, null);
 
-  const getMaterialDotColor = (id) => { /* Mantida a lógica original de cores */
+  const getMaterialDotColor = (id) => { 
     if (!id) return 'bg-slate-400 dark:bg-slate-700';
     if (id.includes('cu_')) return 'bg-orange-500';
     if (id.includes('au_')) return 'bg-yellow-400';
@@ -57,7 +69,7 @@ export default function Sidebar() {
               <div className={`w-3 h-3 rounded-full shrink-0 ${getMaterialDotColor(material.id)}`} />
               <div className="flex-1 min-w-0">
                 <p translate="no" className="text-sm font-bold text-slate-800 dark:text-white truncate">{material.name}</p>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t(`cat_${material.category.toLowerCase().replace(' ', '')}`)}</p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t(getCategoryKey(material.category))}</p>
               </div>
               <button onClick={(e) => { e.stopPropagation(); removeMaterial(layerName); }} className="p-1.5 hover:bg-red-100 dark:hover:bg-red-500/20 text-slate-400 hover:text-red-500 dark:hover:text-red-400 rounded transition-colors z-10 relative"><Trash2 size={14} /></button>
             </div>
@@ -77,33 +89,36 @@ export default function Sidebar() {
     <div className="flex flex-col h-full relative pb-6">
       
       {/* HEADER COM BANDEIRAS DE IDIOMA */}
-      <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-transparent mb-6 transition-colors duration-300">
-        <div className="flex items-center gap-3">
+      <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-transparent mb-6 transition-colors duration-300 gap-4">
+        
+        {/* BLOCO DO LOGO E TÍTULO */}
+        <div className="flex items-center gap-3 min-w-0">
           <div className="w-11 h-11 flex items-center justify-center shrink-0">
             <img src="/sensiomaticon.svg" alt="Logo SensioMat" className="w-full h-full object-contain drop-shadow-sm" />
           </div>
-          <div>
-            <h1 translate="no" className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">{t('app_title')}</h1>
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{t('app_subtitle')}</p>
+          <div className="min-w-0">
+            <h1 translate="no" className="text-xl font-bold tracking-tight text-slate-900 dark:text-white truncate">
+              {t('app_title')}
+            </h1>
+            <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 truncate">
+              {t('app_subtitle')}
+            </p>
           </div>
         </div>
         
         {/* CONTROLES (IDIOMA E TEMA) */}
-        {/* CONTROLES (IDIOMA E TEMA) */}
-        <div className="flex items-center gap-2">
-          {/* Bandeira de Angola */}
+        <div className="flex items-center gap-2.5 shrink-0">
           <button 
             onClick={() => i18n.changeLanguage('pt')} 
-            className={`w-6 h-4 md:w-7 md:h-5 rounded-[3px] overflow-hidden shadow-sm hover:scale-110 transition-all ${i18n.language === 'pt' ? 'opacity-100 ring-2 ring-brandAccent ring-offset-2 dark:ring-offset-slate-900' : 'opacity-40 grayscale hover:grayscale-0 hover:opacity-100'}`} 
+            className={`w-5 h-3.5 md:w-6 md:h-4 rounded-sm overflow-hidden shadow-sm hover:scale-110 transition-all ${i18n.language === 'pt' ? 'opacity-100 ring-2 ring-brandAccent ring-offset-2 dark:ring-offset-slate-900' : 'opacity-40 grayscale hover:grayscale-0 hover:opacity-100'}`} 
             title="Português (Angola)"
           >
             <img src="https://flagcdn.com/w40/ao.png" alt="Bandeira de Angola" className="w-full h-full object-cover" />
           </button>
           
-          {/* Bandeira dos EUA */}
           <button 
             onClick={() => i18n.changeLanguage('en')} 
-            className={`w-6 h-4 md:w-7 md:h-5 rounded-[3px] overflow-hidden shadow-sm hover:scale-110 transition-all ${i18n.language === 'en' ? 'opacity-100 ring-2 ring-brandAccent ring-offset-2 dark:ring-offset-slate-900' : 'opacity-40 grayscale hover:grayscale-0 hover:opacity-100'}`} 
+            className={`w-5 h-3.5 md:w-6 md:h-4 rounded-sm overflow-hidden shadow-sm hover:scale-110 transition-all ${i18n.language === 'en' ? 'opacity-100 ring-2 ring-brandAccent ring-offset-2 dark:ring-offset-slate-900' : 'opacity-40 grayscale hover:grayscale-0 hover:opacity-100'}`} 
             title="English"
           >
             <img src="https://flagcdn.com/w40/us.png" alt="Bandeira dos EUA" className="w-full h-full object-cover" />
@@ -111,8 +126,8 @@ export default function Sidebar() {
           
           <div className="w-px h-5 bg-slate-300 dark:bg-slate-700 mx-1"></div>
           
-          <button onClick={toggleTheme} className="p-2 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors">
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          <button onClick={toggleTheme} className="p-1.5 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors">
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>
         </div>
       </div>
@@ -161,7 +176,7 @@ export default function Sidebar() {
                 <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${getMaterialDotColor(m.id)}`} />
                 <div className="min-w-0 pointer-events-none">
                   <p translate="no" className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{m.name}</p>
-                  <p className="text-[9px] text-slate-500 dark:text-slate-400 uppercase font-medium tracking-wide">{t(`cat_${m.category.toLowerCase().replace(' ', '')}`)}</p>
+                  <p className="text-[9px] text-slate-500 dark:text-slate-400 uppercase font-medium tracking-wide">{t(getCategoryKey(m.category))}</p>
                 </div>
               </div>
             );
