@@ -1,9 +1,4 @@
 export class SimulationEngine {
-  /**
-   * Executa a análise heurística avançada de compatibilidade físico-química da pilha de materiais.
-   * @param {Object} stack - Instâncias completas dos materiais por camada.
-   * @param {Object} environment - Requisitos do ambiente de operação.
-   */
   static runHeuristicAnalysis(stack, environment) {
     const { substrate, circuit, encapsulation } = stack;
     const reqs = environment.requirements;
@@ -11,47 +6,49 @@ export class SimulationEngine {
     const logs = [];
     let criticalFailuresCount = 0;
 
-    // 1. ANÁLISE DAS PROPRIEDADES MECÂNICAS
+    // 1. MECÂNICA
     if (reqs.requiresFlexibility && !substrate.mechanical.isFlexible) {
       criticalFailuresCount++;
       logs.push({
-        property: "Mecânica (Cap. 6)",
+        propertyKey: "prop_mechanics",
         status: "CRITICAL_FAIL",
-        layer: "Substrato",
+        layerKey: "layer_base",
         material: substrate.name,
-        scientificReason: `O ambiente exige conformação mecânica flexível, porém o módulo de elasticidade do material (${substrate.mechanical.elasticModulusGPa} GPa) caracteriza comportamento frágil sob tensão de flexão.`
+        reasonKey: "reason_mech_fail",
+        reasonVars: { modulus: substrate.mechanical.elasticModulusGPa }
       });
     } else {
       logs.push({
-        property: "Mecânica (Cap. 6)",
+        propertyKey: "prop_mechanics",
         status: "PASS",
-        layer: "Substrato",
+        layerKey: "layer_base",
         material: substrate.name,
-        scientificReason: "Integridade estrutural compatível com os limites de estresse mecânico do ambiente."
+        reasonKey: "reason_mech_pass"
       });
     }
 
-    // 2. ANÁLISE DAS PROPRIEDADES ELÉTRICAS
+    // 2. ELÉTRICA
     if (!circuit.electrical.isConductor) {
       criticalFailuresCount++;
       logs.push({
-        property: "Elétrica (Cap. 18)",
+        propertyKey: "prop_electrical",
         status: "CRITICAL_FAIL",
-        layer: "Circuito / Trilhas",
+        layerKey: "layer_mid",
         material: circuit.name,
-        scientificReason: `A camada de circuito requer elétrons livres na banda de condução. O material selecionado possui condutividade desprezível (${circuit.electrical.conductivitySm} S/m) e bandgap de ${circuit.electrical.bandgapEV} eV.`
+        reasonKey: "reason_elec_fail",
+        reasonVars: { conductivity: circuit.electrical.conductivitySm, bandgap: circuit.electrical.bandgapEV }
       });
     } else {
       logs.push({
-        property: "Elétrica (Cap. 18)",
+        propertyKey: "prop_electrical",
         status: "PASS",
-        layer: "Circuito / Trilhas",
+        layerKey: "layer_mid",
         material: circuit.name,
-        scientificReason: "Alta mobilidade eletrônica garantida pela sobreposição de bandas de energia."
+        reasonKey: "reason_elec_pass"
       });
     }
 
-    // 3. ANÁLISE DAS PROPRIEDADES TÉRMICAS ESTRUTURAIS
+    // 3. TÉRMICA ESTRUTURAL
     const maxLayerTemp = Math.min(
       substrate.thermal.maxOperatingTempC,
       circuit.thermal.maxOperatingTempC,
@@ -61,115 +58,115 @@ export class SimulationEngine {
     if (reqs.maxOperatingTempC > maxLayerTemp) {
       criticalFailuresCount++;
       logs.push({
-        property: "Térmica Estrutural (Cap. 19)",
+        propertyKey: "prop_therm_struct",
         status: "CRITICAL_FAIL",
-        layer: "Sistema Global",
-        material: "Múltiplos",
-        scientificReason: `A temperatura ambiente de simulação (${reqs.maxOperatingTempC}°C) supera o ponto de degradação térmica estrutural de uma das camadas (Limite do Stack: ${maxLayerTemp}°C).`
+        layerKey: "layer_global",
+        materialKey: "mat_multiple",
+        reasonKey: "reason_therm_struct_fail",
+        reasonVars: { envTemp: reqs.maxOperatingTempC, limitTemp: maxLayerTemp }
       });
     } else {
       logs.push({
-        property: "Térmica Estrutural (Cap. 19)",
+        propertyKey: "prop_therm_struct",
         status: "PASS",
-        layer: "Sistema Global",
-        material: "Múltiplos",
-        scientificReason: "Estabilidade de agitação reticular garantida dentro da margem operacional de temperatura."
+        layerKey: "layer_global",
+        materialKey: "mat_multiple",
+        reasonKey: "reason_therm_struct_pass"
       });
     }
 
-    // 4. NOVA EQUAÇÃO: ANÁLISE DE DISSIPAÇÃO TÉRMICA FLUXO / CHOKE (Lei de Fourier aplicada)
-    // Calcula o descasamento de condutividade térmica entre o gerador de calor (circuito) e o dissipador/barreira (encapsulamento)
+    // 4. LEI DE FOURIER (FLUXO / CHOKE)
     const thermalMismatchRatio = circuit.thermal.thermalConductivityWmK / encapsulation.thermal.thermalConductivityWmK;
-    
     if (reqs.maxOperatingTempC > 50 && thermalMismatchRatio > 1000) {
       criticalFailuresCount++;
       logs.push({
-        property: "Dissipação Térmica (Lei de Fourier)",
+        propertyKey: "prop_fourier",
         status: "CRITICAL_FAIL",
-        layer: "Interface Circuito-Encapsulamento",
+        layerKey: "layer_interface",
         material: `${circuit.name} / ${encapsulation.name}`,
-        scientificReason: `Gradiente de condução crítico. A razão de condutividade térmica (${thermalMismatchRatio.toFixed(1)}) indica aprisionamento de fluxo de calor. O encapsulamento atua como isolante severo em ambiente aquecido, induzindo efeito Choke.`
+        reasonKey: "reason_fourier_fail",
+        reasonVars: { ratio: thermalMismatchRatio.toFixed(1) }
       });
     } else {
       logs.push({
-        property: "Dissipação Térmica (Lei de Fourier)",
+        propertyKey: "prop_fourier",
         status: "PASS",
-        layer: "Interface Circuito-Encapsulamento",
+        layerKey: "layer_interface",
         material: `${circuit.name} / ${encapsulation.name}`,
-        scientificReason: "Gradiente de transferência térmica calibrado. Sem risco iminente de colapso por acúmulo de energia reticular."
+        reasonKey: "reason_fourier_pass"
       });
     }
 
-    // 5. ANÁLISE DAS PROPRIEDADES MAGNÉTICAS
+    // 5. MAGNÉTICA
     if (reqs.sensitiveToMagneticInterference && encapsulation.magnetic.causesInterference) {
       criticalFailuresCount++;
       logs.push({
-        property: "Magnética (Cap. 20)",
+        propertyKey: "prop_magnetic",
         status: "CRITICAL_FAIL",
-        layer: "Encapsulamento",
+        layerKey: "layer_top",
         material: encapsulation.name,
-        scientificReason: `O material apresenta comportamento ${encapsulation.magnetic.behavior}. Os domínios magnéticos alinhados blindam ou distorcem a propagação de ondas eletromagnéticas de telemetria do dispositivo IoT.`
+        reasonKey: "reason_mag_fail",
+        reasonVars: { behavior: encapsulation.magnetic.behavior }
       });
     } else {
       logs.push({
-        property: "Magnética (Cap. 20)",
+        propertyKey: "prop_magnetic",
         status: "PASS",
-        layer: "Encapsulamento",
+        layerKey: "layer_top",
         material: encapsulation.name,
-        scientificReason: "Permeabilidade magnética inerte. Não causa atenuação de sinal de rádiofrequência."
+        reasonKey: "reason_mag_pass"
       });
     }
 
-    // 6. ANÁLISE DAS PROPRIEDADES ÓPTICAS
+    // 6. ÓPTICA
     if (reqs.requiresOpticalTransparency && !substrate.optical.isTransparent) {
       criticalFailuresCount++;
       logs.push({
-        property: "Óptica (Cap. 21)",
+        propertyKey: "prop_optical",
         status: "CRITICAL_FAIL",
-        layer: "Substrato",
+        layerKey: "layer_base",
         material: substrate.name,
-        scientificReason: "O sistema óptico requer transmitância de luz na faixa visível. Os elétrons de valência do material absorvem os fótons incidentes, gerando opacidade."
+        reasonKey: "reason_optic_fail"
       });
     } else {
       logs.push({
-        property: "Óptica (Cap. 21)",
+        propertyKey: "prop_optical",
         status: "PASS",
-        layer: "Substrato",
+        layerKey: "layer_base",
         material: substrate.name,
-        scientificReason: "Índice de refração e absorção eletrônica permitem a livre propagação dos fótons."
+        reasonKey: "reason_optic_pass"
       });
     }
 
-    // 7. ANÁLISE DAS PROPRIEDADES DETERIORATIVAS (Corrosão e Bio)
+    // 7. DETERIORATIVA (Corrosão e Bio)
     if (reqs.requiresBiocompatibility && (!substrate.deteriorative.isBiocompatible || !encapsulation.deteriorative.isBiocompatible)) {
       criticalFailuresCount++;
       logs.push({
-        property: "Deteriorativa / Bio (Cap. 17)",
+        propertyKey: "prop_bio",
         status: "CRITICAL_FAIL",
-        layer: "Camadas Externas",
-        material: "Substrato ou Encapsulamento",
-        scientificReason: "As camadas em contato direto com o ambiente geram reações citotóxicas ou acionam resposta imunológica do organismo hospedeiro."
+        layerKey: "layer_external",
+        materialKey: "mat_sub_encap",
+        reasonKey: "reason_bio_fail"
       });
     } else if (encapsulation.deteriorative.oxidationResistance < reqs.minOxidationResistance) {
       criticalFailuresCount++;
       logs.push({
-        property: "Deteriorativa / Corrosão (Cap. 17)",
+        propertyKey: "prop_corrosion",
         status: "CRITICAL_FAIL",
-        layer: "Encapsulamento",
+        layerKey: "layer_top",
         material: encapsulation.name,
-        scientificReason: `O potencial eletroquímico do material resultará em dissolução anódica (corrosão severa) perante a salinidade e acidez do ambiente operacional selecionado.`
+        reasonKey: "reason_corr_fail"
       });
     } else {
       logs.push({
-        property: "Deteriorativa (Cap. 17)",
+        propertyKey: "prop_corrosion",
         status: "PASS",
-        layer: "Encapsulamento",
+        layerKey: "layer_top",
         material: encapsulation.name,
-        scientificReason: "Passivação química excelente contra agentes oxidantes externos."
+        reasonKey: "reason_corr_pass"
       });
     }
 
-    // CÁLCULO DE SCORE GERAL DE VIABILIDADE ATUALIZADO (Total de 7 validações agora)
     const totalChecks = 7;
     const passedChecks = totalChecks - criticalFailuresCount;
     const viabilityScore = Math.round((passedChecks / totalChecks) * 100);
