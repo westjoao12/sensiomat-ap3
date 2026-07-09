@@ -48,5 +48,36 @@
   "err_electrical": "Circuit failure. {{material}} is an insulator lacking adequate electron mobility.",
   "ok_electrical": "High electron mobility guaranteed by {{material}}.",
   "err_thermal": "{{material}} in encapsulation causes excessive thermal dissipation to the epidermis.",
-  "ok_thermal": "Thermal stability and insulation guaranteed by {{material}}."
+  "ok_thermal": "Thermal stability and insulation guaranteed by {{material}}.",
+  "prop_mechanics": "Mechanical (Ch. 6)",
+  "prop_electrical": "Electrical (Ch. 18)",
+  "prop_therm_struct": "Structural Thermal (Ch. 19)",
+  "prop_fourier": "Thermal Dissipation (Fourier's Law)",
+  "prop_magnetic": "Magnetic (Ch. 20)",
+  "prop_optical": "Optical (Ch. 21)",
+  "prop_bio": "Deteriorative / Bio (Ch. 17)",
+  "prop_corrosion": "Deteriorative / Corrosion (Ch. 17)",
+  
+  "layer_global": "Global System",
+  "layer_interface": "Circuit-Encapsulation Interface",
+  "layer_external": "External Layers",
+  
+  "mat_multiple": "Multiple",
+  "mat_sub_encap": "Substrate or Encapsulation",
+
+  "reason_mech_fail": "The environment requires flexible conformation, but the material's elastic modulus ({{modulus}} GPa) characterizes brittle behavior under bending stress.",
+  "reason_mech_pass": "Structural integrity compatible with the environment's mechanical stress limits.",
+  "reason_elec_fail": "The circuit layer requires free electrons. The selected material has negligible conductivity ({{conductivity}} S/m) and a bandgap of {{bandgap}} eV.",
+  "reason_elec_pass": "High electron mobility guaranteed by energy band overlap.",
+  "reason_therm_struct_fail": "The simulated ambient temperature ({{envTemp}}°C) exceeds the thermal degradation point of one of the layers (Stack Limit: {{limitTemp}}°C).",
+  "reason_therm_struct_pass": "Lattice agitation stability guaranteed within the operating temperature margin.",
+  "reason_fourier_fail": "Critical conduction gradient. The thermal conductivity ratio ({{ratio}}) indicates heat flux trapping. The encapsulation acts as a severe insulator, inducing a Choke effect.",
+  "reason_fourier_pass": "Calibrated heat transfer gradient. No imminent risk of collapse due to lattice energy accumulation.",
+  "reason_mag_fail": "The material exhibits {{behavior}} behavior. Aligned magnetic domains shield or distort the propagation of IoT telemetry electromagnetic waves.",
+  "reason_mag_pass": "Inert magnetic permeability. Does not cause radio frequency signal attenuation.",
+  "reason_optic_fail": "The optical system requires light transmittance in the visible range. The material's valence electrons absorb incident photons, generating opacity.",
+  "reason_optic_pass": "Refractive index and electronic absorption allow the free propagation of photons.",
+  "reason_bio_fail": "The layers in direct contact with the environment generate cytotoxic reactions or trigger an immune response from the host organism.",
+  "reason_corr_fail": "The material's electrochemical potential will result in anodic dissolution (severe corrosion) given the salinity and acidity of the selected operating environment.",
+  "reason_corr_pass": "Excellent chemical passivation against external oxidizing agents."
 }

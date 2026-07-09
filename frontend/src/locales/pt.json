@@ -48,5 +48,36 @@
   "err_electrical": "Falha no circuito. {{material}} é um isolante e não permite mobilidade eletrónica adequada.",
   "ok_electrical": "Alta mobilidade eletrónica garantida pela escolha de {{material}}.",
   "err_thermal": "{{material}} no encapsulamento causa dissipação térmica excessiva para a epiderme.",
-  "ok_thermal": "Estabilidade e isolamento térmico garantidos por {{material}}."
+  "ok_thermal": "Estabilidade e isolamento térmico garantidos por {{material}}.",
+  "prop_mechanics": "Mecânica (Cap. 6)",
+  "prop_electrical": "Elétrica (Cap. 18)",
+  "prop_therm_struct": "Térmica Estrutural (Cap. 19)",
+  "prop_fourier": "Dissipação Térmica (Lei de Fourier)",
+  "prop_magnetic": "Magnética (Cap. 20)",
+  "prop_optical": "Óptica (Cap. 21)",
+  "prop_bio": "Deteriorativa / Bio (Cap. 17)",
+  "prop_corrosion": "Deteriorativa / Corrosão (Cap. 17)",
+  
+  "layer_global": "Sistema Global",
+  "layer_interface": "Interface Circuito-Encapsulamento",
+  "layer_external": "Camadas Externas",
+  
+  "mat_multiple": "Múltiplos",
+  "mat_sub_encap": "Substrato ou Encapsulamento",
+
+  "reason_mech_fail": "O ambiente exige conformação mecânica flexível, porém o módulo de elasticidade do material ({{modulus}} GPa) caracteriza comportamento frágil sob tensão de flexão.",
+  "reason_mech_pass": "Integridade estrutural compatível com os limites de estresse mecânico do ambiente.",
+  "reason_elec_fail": "A camada de circuito requer elétrons livres. O material possui condutividade desprezível ({{conductivity}} S/m) e bandgap de {{bandgap}} eV.",
+  "reason_elec_pass": "Alta mobilidade eletrónica garantida pela sobreposição de bandas de energia.",
+  "reason_therm_struct_fail": "A temperatura ambiente de simulação ({{envTemp}}°C) supera o ponto de degradação térmica de uma das camadas (Limite do Stack: {{limitTemp}}°C).",
+  "reason_therm_struct_pass": "Estabilidade de agitação reticular garantida dentro da margem operacional de temperatura.",
+  "reason_fourier_fail": "Gradiente de condução crítico. A razão de condutividade térmica ({{ratio}}) indica aprisionamento de fluxo de calor (Efeito Choke).",
+  "reason_fourier_pass": "Gradiente de transferência térmica calibrado. Sem risco iminente de colapso térmico.",
+  "reason_mag_fail": "O material apresenta comportamento {{behavior}}. Os domínios magnéticos blindam/distorcem a telemetria IoT.",
+  "reason_mag_pass": "Permeabilidade magnética inerte. Não causa atenuação de sinal RF.",
+  "reason_optic_fail": "O sistema requer transmitância de luz visível. Os elétrons de valência do material absorvem os fótons, gerando opacidade.",
+  "reason_optic_pass": "Índice de refração e absorção eletrônica permitem a livre propagação dos fótons.",
+  "reason_bio_fail": "As camadas em contato com o ambiente geram reações citotóxicas ou acionam resposta imunológica do hospedeiro.",
+  "reason_corr_fail": "O potencial eletroquímico resultará em dissolução anódica (corrosão severa) perante o ambiente.",
+  "reason_corr_pass": "Passivação química excelente contra agentes oxidantes externos."
 }
