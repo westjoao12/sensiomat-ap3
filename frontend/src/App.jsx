@@ -3,9 +3,11 @@ import useStore from './store/useStore';
 import Sidebar from './components/Sidebar/Sidebar';
 import CanvasView from './components/Canvas3D/CanvasView';
 import Report from './components/Report/Report';
+import { useTranslation } from 'react-i18next';
 
 export default function App() {
   const { loadMaterials, theme } = useStore();
+  const { t } = useTranslation();
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
@@ -47,7 +49,7 @@ export default function App() {
         ${isPresentationMode ? 'md:hidden' : 'md:flex'}
       `}>
         <div className="p-4 flex justify-between items-center border-b border-slate-100 dark:border-slate-800 md:hidden">
-          <span className="font-bold text-slate-700 dark:text-slate-300">Configurações</span>
+          <span className="font-bold text-slate-700 dark:text-slate-300">{t('config_title')}</span>
           <button 
             onClick={() => setIsSidebarOpen(false)}
             className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
@@ -80,12 +82,12 @@ export default function App() {
             {isPresentationMode ? (
               <>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
-                <span className="hidden sm:inline">Sair do Modo Pitch</span>
+                <span className="hidden sm:inline">{t('btn_pitch_exit')}</span>
               </>
             ) : (
               <>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3" /></svg>
-                <span className="hidden sm:inline">Modo Pitch (Exportar)</span>
+                <span className="hidden sm:inline">{t('btn_pitch_enter')}</span>
               </>
             )}
           </button>
@@ -106,7 +108,7 @@ export default function App() {
           </h2>
           {/* Forçamos a descrição a aparecer na impressão para contextualizar o PDF */}
           <p className={`text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm ${isPresentationMode ? 'block' : 'hidden md:block'} print:block`}>
-            Visão arquitetural do biossensor. Camadas separadas para análise de integração material.
+            {t('pitch_desc')}
           </p>
         </div>
       </div>
@@ -125,7 +127,7 @@ export default function App() {
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
           </button>
-          <span className="font-bold text-slate-700 dark:text-slate-300">Resultados</span>
+          <span className="font-bold text-slate-700 dark:text-slate-300">{t('results_title')}</span>
         </div>
         <div className="flex-1 overflow-y-auto overflow-x-hidden print:overflow-visible">
           <Report />
