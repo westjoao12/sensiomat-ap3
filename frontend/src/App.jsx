@@ -60,8 +60,8 @@ export default function App() {
         </div>
       </div>
 
-      {/* CENTRO: Viewport 3D - Adicionado deslocamento à esquerda exclusivo para impressão */}
-      <div className="flex-1 relative h-full min-w-0 print:-translate-x-[180px]">
+      {/* CENTRO: Viewport 3D - Removido o deslocamento negativo para manter centrado na impressão */}
+      <div className="flex-1 relative h-full min-w-0 print:flex-1 print:translate-x-0">
         
         <div className="absolute top-4 left-4 right-4 z-20 flex justify-between items-center pointer-events-none print:hidden">
           <button 
@@ -100,23 +100,23 @@ export default function App() {
 
         <CanvasView />
         
-        <div className={`absolute left-6 pointer-events-none transition-all duration-500 ${isPresentationMode ? 'top-6' : 'top-20 md:top-6'}`}>
+        <div className={`absolute left-6 pointer-events-none transition-all duration-500 ${isPresentationMode ? 'top-6' : 'top-20 md:top-6'} print:top-6`}>
           <h2 className="text-xs md:text-lg font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest drop-shadow-md">
             Sensiomat <span className="text-brandAccent font-medium ml-1">v1.0</span>
           </h2>
-          {isPresentationMode && (
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm">
-              Visão arquitetural do biossensor. Camadas separadas para análise de integração material.
-            </p>
-          )}
+          {/* Forçamos a descrição a aparecer na impressão para contextualizar o PDF */}
+          <p className={`text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm ${isPresentationMode ? 'block' : 'hidden md:block'} print:block`}>
+            Visão arquitetural do biossensor. Camadas separadas para análise de integração material.
+          </p>
         </div>
       </div>
 
-      {/* PAINEL DIREITO: Atualizado para w-[400px] e adicionado overflow-x-hidden */}
+      {/* PAINEL DIREITO: Report - Classes de impressão ajustadas para fixar o relatório ao lado do Canvas */}
       <div className={`
         fixed inset-y-0 right-0 w-[400px] max-w-[calc(100vw-3rem)] shrink-0 h-full bg-white dark:bg-darkSurface shadow-2xl z-40 flex flex-col transition-transform duration-300 ease-in-out
         md:static md:translate-x-0
         ${isReportOpen ? 'translate-x-0' : 'translate-x-full'}
+        print:static print:translate-x-0 print:w-[380px] print:shadow-none print:border-l print:border-slate-200
       `}>
         <div className="p-4 flex justify-between items-center border-b border-slate-100 dark:border-slate-800 md:hidden print:hidden">
           <button 
@@ -127,8 +127,7 @@ export default function App() {
           </button>
           <span className="font-bold text-slate-700 dark:text-slate-300">Resultados</span>
         </div>
-        {/* Adicionado overflow-x-hidden para garantir que nunca aparece o scroll horizontal */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden print:overflow-visible">
           <Report />
         </div>
       </div>

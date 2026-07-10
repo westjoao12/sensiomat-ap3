@@ -11,7 +11,7 @@ export default function CanvasView() {
 
   return (
     <div className={`w-full h-full cursor-grab active:cursor-grabbing transition-colors duration-700 ${isDark ? 'bg-gradient-to-b from-darkBg to-slate-900' : 'bg-gradient-to-b from-slate-100 to-slate-300'}`}>
-      <Canvas camera={{ position: [5, 4, 6], fov: 45 }}>
+      <Canvas camera={{ position: [5, 4, 6], fov: 45 }} gl={{ preserveDrawingBuffer: true }} >
         
         {/* LUZES DINÂMICAS: No modo claro, precisamos de mais luz ambiente para os materiais não ficarem opacos */}
         <ambientLight intensity={isDark ? 0.4 : 0.7} />
