@@ -19,7 +19,7 @@ Este documento detalha as interfaces de comunicação (API RESTful) fornecidas p
 
 Todas as requisições devem seguir o padrão HTTP padrão. O formato de troca de dados padrão (tanto para a carga útil de envio quanto para a resposta) é o **JSON** (`application/json`).
 
-*   **URL Base (Desenvolvimento local):** `http://localhost:3000`
+*   **URL Base (Desenvolvimento local):** `http://localhost:3001`
 *   **URL Base (Produção - Proposto):** `https://api.sensiomat.com`
 
 ---
@@ -40,17 +40,40 @@ Retorna a lista completa de materiais disponíveis no sistema, categorizados com
 ```json
 {
   "success": true,
-  "count": 42,
-  "data": [
-    {
-      "id": "mat_cu_01",
-      "name": "Cobre Puro (Cu)",
-      "category": "Metal",
-      "thermalConductivity": 401,
-      "youngModulus": 110,
-      "thermalExpansion": 16.5,
-      "electricalConductivity": 5.96e7
-    }
+  "data": {
+    "materialsCount": 11,
+    "environmentsCount": 4,
+    "materials": [
+      {
+        "id": "mat_cu_01",
+        "name": "Cobre Puro (Cu)",
+        "category": "Metal",
+        "mechanical": {
+          "elasticModulusGPa": 110,
+          "tensileStrengthMPa": 220,
+          "isFlexible": true
+        },
+        "electrical": {
+          "conductivitySm": 58500000,
+          "bandgapEV": 0,
+          "isConductor": true
+        },
+        "thermal": {
+          "thermalConductivityWmK": 398,
+          "maxOperatingTempC": 150
+        },
+        "magnetic": {
+          "behavior": "Diamagnético",
+          "causesInterference": false
+        },
+        "optical": {
+          "isTransparent": false
+        },
+        "deteriorative": {
+          "oxidationResistance": 4,
+          "isBiocompatible": false
+        }
+      },
     // ... outros materiais
   ]
 }
@@ -67,11 +90,11 @@ Retorna a lista completa de materiais disponíveis no sistema, categorizados com
 **Carga Útil da Requisição (Body):**
 ```json
 {
-  "environment": "env_agri_soil",
-  "layers": {
-    "substrate": "mat_pdms_01",
+  "environmentId": "env_body_implant",
+  "stack": {
+    "substrate": "mat_alumina_01",
     "circuit": "mat_cu_01",
-    "encapsulation": "mat_alumina_01"
+    "encapsulation": "mat_pdms_01"
   }
 }
 ```
@@ -80,23 +103,67 @@ Retorna a lista completa de materiais disponíveis no sistema, categorizados com
 ```json
 {
   "success": true,
-  "overall_status": "warning",
-  "diagnostics": {
-    "thermal": {
-      "passed": true,
-      "message": "Dissipação térmica adequada. Rth dentro do limite operacional.",
-      "score": 85
-    },
-    "mechanical": {
-      "passed": false,
-      "message": "Risco de delaminação. Tensão termomecânica na interface Substrato-Circuito excede o limite elástico (Δα crítico).",
-      "score": 30
-    },
-    "electrical": {
-      "passed": true,
-      "message": "Isolamento garantido pelo encapsulamento cerâmico.",
-      "score": 100
-    }
+  "simulation": {
+    "simulationTimestamp": "2026-07-11T03:46:37.906Z",
+    "environmentTested": "Biossensor Epidérmico / Implante",
+    "globalStatus": "REJECTED",
+    "viabilityScorePercentage": 86,
+    "propertiesAnalyzedCount": 7,
+    "criticalFailuresDetected": 1,
+    "diagnosticLogs": [
+      {
+        "propertyKey": "prop_mechanics",
+        "status": "CRITICAL_FAIL",
+        "layerKey": "layer_base",
+        "material": "Óxido de Alumínio / Alumina (Al2O3)",
+        "reasonKey": "reason_mech_fail",
+        "reasonVars": {
+          "modulus": 380
+        }
+      },
+      {
+        "propertyKey": "prop_electrical",
+        "status": "PASS",
+        "layerKey": "layer_mid",
+        "material": "Cobre Puro (Cu)",
+        "reasonKey": "reason_elec_pass"
+      },
+      {
+        "propertyKey": "prop_therm_struct",
+        "status": "PASS",
+        "layerKey": "layer_global",
+        "materialKey": "mat_multiple",
+        "reasonKey": "reason_therm_struct_pass"
+      },
+      {
+        "propertyKey": "prop_fourier",
+        "status": "PASS",
+        "layerKey": "layer_interface",
+        "material": "Cobre Puro (Cu) / PDMS (Silicone Industrial)",
+        "reasonKey": "reason_fourier_pass"
+      },
+      {
+        "propertyKey": "prop_magnetic",
+        "status": "PASS",
+        "layerKey": "layer_top",
+        "material": "PDMS (Silicone Industrial)",
+        "reasonKey": "reason_mag_pass"
+      },
+      {
+        "propertyKey": "prop_optical",
+        "status": "PASS",
+        "layerKey": "layer_base",
+        "material": "Óxido de Alumínio / Alumina (Al2O3)",
+        "reasonKey": "reason_optic_pass"
+      },
+      {
+        "propertyKey": "prop_corrosion",
+        "status": "PASS",
+        "layerKey": "layer_top",
+        "material": "PDMS (Silicone Industrial)",
+        "reasonKey": "reason_corr_pass"
+      }
+    ]
   }
 }
 ```
@@ -122,9 +189,9 @@ Para desenvolvedores e integração rápida, a API pode ser testada via terminal
 
 ```bash
 # Teste de Simulação via cURL
-curl -X POST http://localhost:3000/api/v1/simulate \
+curl -X POST http://localhost:3001/api/v1/simulate \
 -H "Content-Type: application/json" \
--d '{"environment":"env_body_implant","layers":{"substrate":"mat_pdms_01","circuit":"mat_au_01","encapsulation":"mat_pdms_01"}}'
+-d '{"environmentId":"env_body_implant","stack":{"substrate":"mat_pdms_01","circuit":"mat_au_01","encapsulation":"mat_pdms_01"}}'
 ```
 
 ---
