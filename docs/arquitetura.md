@@ -1,4 +1,18 @@
-# Arquitetura do Sistema e Topologia do Monorepo
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="150">
+        <!-- Substitua logo.png pelo nome real do seu arquivo -->
+        <img src="./imagens/logo.png" alt="Logo SensioMat" width="120" />
+      </td>
+      <td>
+        <h1>SensioMat: Motor de Arquitetura IoT e Análise Heurística de Física de Materiais</h1>
+        <p><strong>Arquitetura do Sistema e Topologia do Monorepo</strong></p>
+      </td>
+    </tr>
+  </table>
+</div>
+
 
 Este documento descreve a arquitetura de software do SensioMat, detalhando a estrutura do código-fonte, as tecnologias adotadas e o fluxo de dados entre as camadas da aplicação. A plataforma foi desenhada com foco em modularidade, baixa latência computacional e escalabilidade, preparando o terreno para futuras integrações complexas.
 
