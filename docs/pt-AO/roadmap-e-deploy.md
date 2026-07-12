@@ -2,8 +2,7 @@
   <table>
     <tr>
       <td align="center" width="150">
-        <!-- Substitua logo.png pelo nome real do seu arquivo -->
-        <img src="./imagens/logo.png" alt="Logo SensioMat" width="120" />
+        <img src="../imagens/logo.png" alt="Logo SensioMat" width="120" />
       </td>
       <td>
         <h1>SensioMat: Motor de Arquitetura IoT e Análise Heurística de Física de Materiais</h1>

@@ -2,8 +2,7 @@
   <table>
     <tr>
       <td align="center" width="150">
-        <!-- Substitua logo.png pelo nome real do seu arquivo -->
-        <img src="./imagens/logo.png" alt="Logo SensioMat" width="120" />
+        <img src="../imagens/logo.png" alt="Logo SensioMat" width="120" />
       </td>
       <td>
         <h1>SensioMat: Motor de Arquitetura IoT e Análise Heurística de Física de Materiais</h1>
@@ -50,11 +49,18 @@ sensiomat-ap3/
 │   └── package.json
 │
 ├── docs/                     # Documentação Oficial do Projeto
-│   ├── visao-geral.md
-│   ├── motor-heuristico.md
-│   ├── arquitetura.md
-│   ├── api-integracao.md
-│   └── roadmap-e-deploy.md
+│   ├── en-US/
+│   │   ├── overview.md
+│   │   ├── heuristic-engine.md
+│   │   ├── architecture.md
+│   │   ├── api-integration.md
+│   │   └── roadmap-and-deploy.md
+│   └── pt-AO/
+│       ├── visao-geral.md
+│       ├── motor-heuristico.md
+│       ├── arquitetura.md
+│       ├── api-integracao.md
+│       └── roadmap-e-deploy.md
 │
 ├── .github/                  # [DevOps] Pipelines de automação
 │   └── workflows/
