@@ -48,11 +48,18 @@ sensiomat-ap3/
 │   └── package.json
 │
 ├── docs/                     # Official Project Documentation
-│   ├── visao-geral.md
-│   ├── motor-heuristico.md
-│   ├── arquitetura.md
-│   ├── api-integracao.md
-│   └── roadmap-e-deploy.md
+│   ├── en-US/
+│   │   ├── overview.md
+│   │   ├── heuristic-engine.md
+│   │   ├── architecture.md
+│   │   ├── api-integration.md
+│   │   └── roadmap-and-deploy.md
+│   └── pt-AO/
+│       ├── visao-geral.md
+│       ├── motor-heuristico.md
+│       ├── arquitetura.md
+│       ├── api-integracao.md
+│       └── roadmap-e-deploy.md
 │
 ├── .github/                  # [DevOps] Automation pipelines
 │   └── workflows/
