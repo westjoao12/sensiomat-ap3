@@ -17,7 +17,7 @@
 
   <!-- Badges genéricas para aspeto profissional -->
   <img src="https://img.shields.io/badge/Versão-1.0.0 (MVP)-blue" alt="Versão" />
-  <img src="https://img.shields.io/badge/Licença-MIT-green" alt="Licença" />
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/Licença-MIT-green" alt="Licença" /></a>
   <a href="https://sensiomat.vercel.app"><img src="https://img.shields.io/badge/Deploy-Vercel-black" alt="Vercel" /></a>
 </div>
 
