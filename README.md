@@ -1,3 +1,5 @@
+🇺🇸 [English Version](README.en.md) | 🇦🇴 🇧🇷 [Versão em Português](README.md)
+
 <div align="center">
   <a href="https://github.com/westjoao12/sensiomat-ap3">
     <img src="./docs/imagens/logo.png" alt="Logo SensioMat" width="150" />
@@ -42,11 +44,11 @@ A documentação detalhada deste monorepo foi segmentada por público-alvo (inve
 
 **Recomenda-se a leitura na seguinte ordem:**
 
-1. 📖 [Visão Geral e Contexto de Mercado](./docs/visao-geral.md) - *Para Investidores e Professores*
-2. 🧠 [Motor Heurístico e Modelo Matemático](./docs/motor-heuristico.md) - *Para Avaliadores e Cientistas*
-3. 🏗️ [Arquitetura do Monorepo](./docs/arquitetura.md) - *Para Desenvolvedores Frontend/Backend*
-4. 🔌 [API e Integração](./docs/api-integracao.md) - *Para Engenheiros de Integração*
-5. 🗺️ [Roadmap e Implantação (CI/CD)](./docs/roadmap-e-deploy.md) - *Para DevOps e Contribuidores*
+1. 📖 [Visão Geral e Contexto de Mercado](./docs/pt-AO/visao-geral.md) - *Para Investidores e Professores*
+2. 🧠 [Motor Heurístico e Modelo Matemático](./docs/pt-AO/motor-heuristico.md) - *Para Avaliadores e Cientistas*
+3. 🏗️ [Arquitetura do Monorepo](./docs/pt-AO/arquitetura.md) - *Para Desenvolvedores Frontend/Backend*
+4. 🔌 [API e Integração](./docs/pt-AO/api-integracao.md) - *Para Engenheiros de Integração*
+5. 🗺️ [Roadmap e Implantação (CI/CD)](./docs/pt-AO/roadmap-e-deploy.md) - *Para DevOps e Contribuidores*
 
 ---
 
@@ -82,7 +84,7 @@ Siga os passos abaixo para clonar e iniciar o ambiente de desenvolvimento local 
 
 ```bash
 # 1. Clone o repositório
-git clone [https://github.com/westjoao12/sensiomat-ap3.git](https://github.com/westjoao12/sensiomat-ap3.git)
+git clone https://github.com/westjoao12/sensiomat-ap3.git
 cd sensiomat-ap3
 
 # 2. Inicie o Backend (Serviço Científico e API)
@@ -104,6 +106,6 @@ npm run dev
 
 ## 🤝 Contribuição e Licença
 
-Este é um projeto nascido no seio da investigação e engenharia, aberto ao escrutínio académico e colaboração. Para contribuir, consulte o nosso [Roadmap](./docs/roadmap-e-deploy.md) e verifique os *pull requests* abertos.
+Este é um projeto nascido no seio da investigação e engenharia, aberto ao escrutínio académico e colaboração. Para contribuir, consulte o nosso [Roadmap](./docs/pt-AO/roadmap-e-deploy.md) e verifique os *pull requests* abertos.
 
 Distribuído sob a **Licença MIT**. Veja o ficheiro `LICENSE` para mais detalhes.
