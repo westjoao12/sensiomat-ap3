@@ -9,10 +9,16 @@
   <h1>SensioMat</h1>
   <p><strong>IoT Architecture Engine and Materials Physics Heuristic Analysis</strong></p>
 
+  <p>
+    <a href="https://sensiomat.vercel.app" target="_blank">
+      <strong>🌐 Access the Live Platform: sensiomat.vercel.app</strong>
+    </a>
+  </p>
+
   <!-- Generic badges for professional appearance -->
   <img src="https://img.shields.io/badge/Version-1.0.0 (MVP)-blue" alt="Version" />
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License" />
-  <img src="https://img.shields.io/badge/Deploy-Vercel-black" alt="Vercel" />
+  <a href="https://sensiomat.vercel.app"><img src="https://img.shields.io/badge/Deploy-Vercel-black" alt="Vercel" /></a>
 </div>
 
 <br/>
