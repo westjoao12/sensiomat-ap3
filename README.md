@@ -1,4 +1,5 @@
-🇺🇸 [English Version](README.en.md) | 🇦🇴 🇧🇷 [Versão em Português](README.md)
+<a href="README.en.md"><img src="https://flagcdn.com/w20/us.png" width="20" alt="Bandeira US" /> English Version</a> | 
+<a href="README.md"><img src="https://flagcdn.com/w20/ao.png" width="20" alt="Bandeira de Angola" /> <img src="https://flagcdn.com/w20/br.png" width="20" alt="Bandeira do Brasil" /> Versão em Português</a>
 
 <div align="center">
   <a href="https://github.com/westjoao12/sensiomat-ap3">
