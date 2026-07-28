@@ -51,11 +51,12 @@ A documentação detalhada deste monorepo foi segmentada por público-alvo (inve
 
 **Recomenda-se a leitura na seguinte ordem:**
 
-1. 📖 [Visão Geral e Contexto de Mercado](./docs/pt-AO/visao-geral.md) - *Para Investidores e Professores*
-2. 🧠 [Motor Heurístico e Modelo Matemático](./docs/pt-AO/motor-heuristico.md) - *Para Avaliadores e Cientistas*
-3. 🏗️ [Arquitetura do Monorepo](./docs/pt-AO/arquitetura.md) - *Para Desenvolvedores Frontend/Backend*
-4. 🔌 [API e Integração](./docs/pt-AO/api-integracao.md) - *Para Engenheiros de Integração*
-5. 🗺️ [Roadmap e Implantação (CI/CD)](./docs/pt-AO/roadmap-e-deploy.md) - *Para DevOps e Contribuidores*
+1. 🔰 [SensioMat para Iniciantes](./docs/pt-AO/guia-iniciante.md) - *Para o Público Geral e Estudantes*
+2. 📖 [Visão Geral e Contexto de Mercado](./docs/pt-AO/visao-geral.md) - *Para Investidores e Professores*
+3. 🧠 [Motor Heurístico e Modelo Matemático](./docs/pt-AO/motor-heuristico.md) - *Para Avaliadores e Cientistas*
+4. 🏗️ [Arquitetura do Monorepo](./docs/pt-AO/arquitetura.md) - *Para Desenvolvedores Frontend/Backend*
+5. 🔌 [API e Integração](./docs/pt-AO/api-integracao.md) - *Para Engenheiros de Integração*
+6. 🗺️ [Roadmap e Implantação (CI/CD)](./docs/pt-AO/roadmap-e-deploy.md) - *Para DevOps e Contribuidores*
 
 ---
 

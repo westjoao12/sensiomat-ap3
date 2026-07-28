@@ -51,11 +51,12 @@ The detailed documentation of this monorepo has been segmented by target audienc
 
 **Reading is recommended in the following order:**
 
-1. 📖 [Overview and Market Context](./docs/en-US/overview.md) - *For Investors and Professors*
-2. 🧠 [Heuristic Engine and Mathematical Model](./docs/en-US/heuristic-engine.md) - *For Evaluators and Scientists*
-3. 🏗️ [Monorepo Architecture](./docs/en-US/architecture.md) - *For Frontend/Backend Developers*
-4. 🔌 [API and Integration](./docs/en-US/api-integration.md) - *For Integration Engineers*
-5. 🗺️ [Roadmap and Deployment (CI/CD)](./docs/en-US/roadmap-and-deploy.md) - *For DevOps and Contributors*
+1. 🔰 [SensioMat for Beginners](./docs/en-US/beginners-guide.md) - *For the General Public and Students*
+2. 📖 [Overview and Market Context](./docs/en-US/overview.md) - *For Investors and Professors*
+3. 🧠 [Heuristic Engine and Mathematical Model](./docs/en-US/heuristic-engine.md) - *For Evaluators and Scientists*
+4. 🏗️ [Monorepo Architecture](./docs/en-US/architecture.md) - *For Frontend/Backend Developers*
+5. 🔌 [API and Integration](./docs/en-US/api-integration.md) - *For Integration Engineers*
+6. 🗺️ [Roadmap and Deployment (CI/CD)](./docs/en-US/roadmap-and-deploy.md) - *For DevOps and Contributors*
 
 ---
 

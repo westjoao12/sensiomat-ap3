@@ -1,7 +1,7 @@
 {
   "name": "sensiomat-backend",
   "version": "1.0.0",
-  "description": "SensioMat - IoT Materials Architecture Physics Engine",
+  "description": "SensioMat - IoT Architecture Engine and Materials Physics Heuristic Analysis",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
@@ -14,7 +14,7 @@
     "callister",
     "simulation"
   ],
-  "author": "João Afonso Fukiau",
+  "author": "Apollo Earth Team",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
